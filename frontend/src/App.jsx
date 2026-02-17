@@ -23,6 +23,33 @@ function App() {
     setCurrentView('dashboard'); // Go back to dashboard after saving
   };
 
+
+  const handleDeleteProspect = async (e, prospectId) => {
+    // This stops the click from "bubbling up" and accidentally selecting the prospect
+    e.stopPropagation(); 
+    
+    // The verify pop-up!
+    const isConfirmed = window.confirm("Are you sure you want to delete this prospect? This will also delete their AI email history.");
+    
+    if (isConfirmed) {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/v1/prospects/${prospectId}`);
+        
+        // Refresh the sidebar list
+        setRefreshTrigger(prev => prev + 1);
+        
+        // If we just deleted the person we are currently looking at, send us back to the dashboard
+        if (currentView === prospectId) {
+          setCurrentView('dashboard');
+        }
+      } catch (error) {
+        console.error("Failed to delete:", error);
+        alert("Failed to delete the prospect. Check the console.");
+      }
+    }
+  };
+
+
   // Helper to figure out which prospect object is currently selected
   const selectedProspect = prospects.find(p => p.id === currentView);
 
@@ -55,14 +82,27 @@ function App() {
           </p>
 
           {/* List of Leads */}
+          {/* List of Leads */}
           {prospects.map(prospect => (
             <div 
               key={prospect.id}
               className={`sidebar-item ${currentView === prospect.id ? 'active' : ''}`}
               onClick={() => setCurrentView(prospect.id)}
             >
-              <strong>{prospect.first_name} {prospect.last_name}</strong>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{prospect.company_name}</div>
+              {/* Text on the left */}
+              <div>
+                <strong>{prospect.first_name} {prospect.last_name}</strong>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{prospect.company_name}</div>
+              </div>
+              
+              {/* Trash can on the right */}
+              <button 
+                className="delete-btn" 
+                onClick={(e) => handleDeleteProspect(e, prospect.id)}
+                title="Delete Prospect"
+              >
+                🗑️
+              </button>
             </div>
           ))}
         </div>
@@ -73,6 +113,11 @@ function App() {
         {currentView === 'dashboard' && <Dashboard key={refreshTrigger} />}
         
         {currentView === 'add_lead' && <LeadForm onLeadAdded={handleLeadAdded} />}
+
+
+        
+
+
         
         {/* If the current view is a Number (an ID), show the detail component */}
         {typeof currentView === 'number' && selectedProspect && (

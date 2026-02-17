@@ -116,6 +116,34 @@ body {
   font-weight: 500;
   transition: all 0.2s;
   border: 1px solid transparent;
+  
+  /* NEW: Flexbox to push the trash can to the far right */
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+}
+
+/* ... existing hover and active states ... */
+
+/* NEW: The Trash Can Button CSS */
+.delete-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.2s, background-color 0.2s;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.delete-btn:hover {
+  background-color: #fee2e2; /* Light red hover background */
+}
+
+/* When hovering over the sidebar item, make the delete button visible */
+.sidebar-item:hover .delete-btn {
+  opacity: 1;
 }
 
 .sidebar-item:hover {
@@ -134,3 +162,6 @@ body {
   padding: 40px;
   overflow-y: auto;
 }
+
+
+
