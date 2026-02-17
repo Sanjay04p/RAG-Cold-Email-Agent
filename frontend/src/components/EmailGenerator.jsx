@@ -3,8 +3,8 @@ import axios from 'axios';
 
 export default function EmailGenerator({ refreshTrigger }) {
   const [prospects, setProspects] = useState([]);
-  const [loadingId, setLoadingId] = useState(null); // Tracks which button is loading
-  const [results, setResults] = useState({}); // Stores the generated emails
+  const [loadingId, setLoadingId] = useState(null);
+  const [results, setResults] = useState({});
 
   // Fetch prospects when the component loads, OR when a new lead is added
   useEffect(() => {

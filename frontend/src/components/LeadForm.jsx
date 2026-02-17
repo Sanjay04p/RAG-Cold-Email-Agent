@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-// The "onLeadAdded" is a prop (a function passed down from the parent App.jsx)
+
 export default function LeadForm({ onLeadAdded }) {
   const [formData, setFormData] = useState({
     first_name: '', last_name: '', email: '', company_name: '', company_website: ''
@@ -20,7 +20,7 @@ export default function LeadForm({ onLeadAdded }) {
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/v1/prospects/', formData);
       alert("Lead saved successfully!");
-      onLeadAdded(response.data); // Tell the main App that a new lead exists
+      onLeadAdded(response.data); 
       
       // Clear the form
       setFormData({ first_name: '', last_name: '', email: '', company_name: '', company_website: ''});

@@ -17,4 +17,4 @@ class Prospect(ProspectBase):
     id: int
 
     class Config:
-        from_attributes = True # Allows Pydantic to read SQLAlchemy models
+        from_attributes = True 

@@ -39,11 +39,11 @@ class EmailLog(Base):
     
     # AI Generated Content
     subject_line = Column(String)
-    personalized_opening = Column(Text) # The RAG-generated part
+    personalized_opening = Column(Text) 
     full_body = Column(Text)
     
     # Analytics for A/B testing
-    status = Column(String, default="draft") # draft, sent, opened, replied
+    status = Column(String, default="draft")
     sent_at = Column(DateTime(timezone=True), nullable=True)
 
     prospect = relationship("Prospect", back_populates="emails")

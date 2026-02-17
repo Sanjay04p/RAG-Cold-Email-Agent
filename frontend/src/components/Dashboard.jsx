@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// In React, components are just functions that return UI (HTML-like syntax called JSX)
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
 

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.core.config import settings
 from app.core.database import engine
-from app.models import models  # Import your models so SQLAlchemy knows them
+from app.models import models  
 from app.api.v1.endpoints import prospects, research, analytics
 # Create the database tables
 from fastapi.middleware.cors import CORSMiddleware

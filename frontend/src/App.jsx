@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Dashboard from './components/Dashboard';
 import LeadForm from './components/LeadForm';
-import EmailGenerator from './components/EmailGenerator'; // 1. Import it
+import EmailGenerator from './components/EmailGenerator'; 
 
 function App() {
   // We use this state simply to tell the EmailGenerator to re-fetch the database

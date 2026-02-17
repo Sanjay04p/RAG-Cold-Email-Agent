@@ -13,13 +13,12 @@ def get_analytics_summary(db: Session = Depends(get_db)):
     # 1. Total prospects
     total_prospects = db.query(models.Prospect).count()
     
-    # 2. Group emails by their status (draft, sent, opened, replied)
     status_counts = db.query(
         models.EmailLog.status, 
         func.count(models.EmailLog.id)
     ).group_by(models.EmailLog.status).all()
     
-    # Convert the database result [(draft, 5), (sent, 2)] into a dictionary
+   
     stats = {status: count for status, count in status_counts}
     
     return {
