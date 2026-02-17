@@ -7,9 +7,8 @@ import ProspectDetail from './components/ProspectDetail';
 function App() {
   const [prospects, setProspects] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  
-  // Navigation State: can be 'dashboard', 'add_lead', or a specific prospect ID
   const [currentView, setCurrentView] = useState('dashboard');
+  const [prospectToDelete, setProspectToDelete] = useState(null);
 
   // Fetch all leads for the sidebar
   useEffect(() => {
@@ -24,28 +23,34 @@ function App() {
   };
 
 
-  const handleDeleteProspect = async (e, prospectId) => {
-    // This stops the click from "bubbling up" and accidentally selecting the prospect
-    e.stopPropagation(); 
-    
-    // The verify pop-up!
-    const isConfirmed = window.confirm("Are you sure you want to delete this prospect? This will also delete their AI email history.");
-    
-    if (isConfirmed) {
-      try {
-        await axios.delete(`http://127.0.0.1:8000/api/v1/prospects/${prospectId}`);
-        
-        // Refresh the sidebar list
-        setRefreshTrigger(prev => prev + 1);
-        
-        // If we just deleted the person we are currently looking at, send us back to the dashboard
-        if (currentView === prospectId) {
-          setCurrentView('dashboard');
-        }
-      } catch (error) {
-        console.error("Failed to delete:", error);
-        alert("Failed to delete the prospect. Check the console.");
+  // 1. Opens the modal when the trash can is clicked
+  const initiateDelete = (e, prospectId) => {
+    e.stopPropagation(); // Stops the sidebar item from being clicked
+    setProspectToDelete(prospectId);
+  };
+
+  // 2. Closes the modal if they click Cancel or click outside
+  const cancelDelete = () => {
+    setProspectToDelete(null);
+  };
+
+  // 3. Actually runs the API call when they click the red "Delete" button
+  const confirmDelete = async () => {
+    if (!prospectToDelete) return;
+
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/v1/prospects/${prospectToDelete}`);
+      setRefreshTrigger(prev => prev + 1);
+      
+      if (currentView === prospectToDelete) {
+        setCurrentView('dashboard');
       }
+    } catch (error) {
+      console.error("Failed to delete:", error);
+      alert("Failed to delete the prospect. Check the console.");
+    } finally {
+      // Always close the modal when done
+      setProspectToDelete(null); 
     }
   };
 
@@ -98,7 +103,7 @@ function App() {
               {/* Trash can on the right */}
               <button 
                 className="delete-btn" 
-                onClick={(e) => handleDeleteProspect(e, prospect.id)}
+                onClick={(e) => initiateDelete(e, prospect.id)}
                 title="Delete Prospect"
               >
                 🗑️
@@ -113,18 +118,27 @@ function App() {
         {currentView === 'dashboard' && <Dashboard key={refreshTrigger} />}
         
         {currentView === 'add_lead' && <LeadForm onLeadAdded={handleLeadAdded} />}
-
-
-        
-
-
-        
+ 
         {/* If the current view is a Number (an ID), show the detail component */}
         {typeof currentView === 'number' && selectedProspect && (
           <ProspectDetail key={selectedProspect.id} prospect={selectedProspect} />
         )}
       </div>
-
+        {prospectToDelete && (
+        <div className="modal-overlay" onClick={cancelDelete}>
+          {/* stopPropagation prevents a click inside the white box from closing the modal */}
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3 className="modal-title">Delete prospect?</h3>
+            <p className="modal-text">
+              This will delete the prospect's details, along with any AI-generated emails and history associated with them.
+            </p>
+            <div className="modal-actions">
+              <button className="btn-text" onClick={cancelDelete}>Cancel</button>
+              <button className="btn-danger" onClick={confirmDelete}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

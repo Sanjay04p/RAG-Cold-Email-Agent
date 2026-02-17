@@ -164,4 +164,78 @@ body {
 }
 
 
+/* --- CUSTOM DELETE MODAL --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4); /* Dimmed backdrop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px); /* Slight blur effect */
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 12px 0;
+  color: var(--text-main);
+}
+
+.modal-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-text {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-text:hover {
+  background: #f1f5f9;
+}
+
+.btn-danger {
+  background: transparent;
+  border: none;
+  color: #dc2626; /* Deep Red */
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-danger:hover {
+  background: #fee2e2;
+}
+
 
