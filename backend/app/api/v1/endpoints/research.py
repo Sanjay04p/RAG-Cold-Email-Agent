@@ -40,7 +40,12 @@ def generate_email_line(prospect_id: int, db: Session = Depends(get_db)):
 
     # 4. RAG RETRIEVAL: Ask Pinecone for the best email hook
     search_query = "What is a recent company news, product launch, or key achievement?"
-    retrieved_context = vector_db.search_company_data(query=search_query)
+    
+    # THE FIX: Pass the company_name into the search function
+    retrieved_context = vector_db.search_company_data(
+        query=search_query,
+        company_name=prospect.company_name 
+    )
 
     # 5. GENERATION: Give Gemini ONLY the highly relevant context
     print("Generating personalized line with AI...")

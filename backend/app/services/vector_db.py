@@ -57,24 +57,26 @@ class VectorDBService:
             ]
         )
 
-    def search_company_data(self, query: str, top_k: int = 1) -> str:
+    # ADD company_name to the parameters
+    def search_company_data(self, query: str, company_name: str, top_k: int = 1) -> str:
         """
-        Converts a question into a vector and searches Pinecone 
-        for the most relevant chunk of text.
+        Searches Pinecone for the most relevant chunk of text, 
+        filtered ONLY for the specific company we are emailing.
         """
-        print(f"Searching Pinecone for: '{query}'")
+        print(f"Searching Pinecone for: '{query}' at {company_name}")
         
-        # 1. Turn our search question into a vector using Gemini
         query_vector = self.get_embedding(query)
         
-        # 2. Search Pinecone for the closest match
         results = self.index.query(
             vector=query_vector,
             top_k=top_k,
-            include_metadata=True
+            include_metadata=True,
+            # THE FIX: This forces Pinecone to only look at this specific company's data
+            filter={
+                "company": {"$eq": company_name} 
+            }
         )
         
-        # 3. Return the actual text we found
         if results.matches:
             return results.matches[0].metadata.get("text", "")
             
