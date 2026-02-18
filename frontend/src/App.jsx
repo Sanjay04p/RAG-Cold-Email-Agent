@@ -120,8 +120,16 @@ function App() {
         {currentView === 'add_lead' && <LeadForm onLeadAdded={handleLeadAdded} />}
  
         {/* If the current view is a Number (an ID), show the detail component */}
-        {typeof currentView === 'number' && selectedProspect && (
+        {/* {typeof currentView === 'number' && selectedProspect && (
           <ProspectDetail key={selectedProspect.id} prospect={selectedProspect} />
+          
+        )} */}
+        {typeof currentView === 'number' && selectedProspect && (
+          <ProspectDetail 
+            key={selectedProspect.id} 
+            prospect={selectedProspect} 
+            onProspectUpdated={() => setRefreshTrigger(prev => prev + 1)} // NEW: Tells the sidebar to reload
+          />
         )}
       </div>
         {prospectToDelete && (

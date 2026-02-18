@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-
+from pydantic import BaseModel
 from app.core.database import get_db
 from app.schemas import prospect as prospect_schema
 from app import crud
+from app.models import models
 
 router = APIRouter()
 
@@ -20,10 +21,10 @@ def read_prospects(skip: int = 0, limit: int = 100, db: Session = Depends(get_db
     prospects = crud.get_prospects(db, skip=skip, limit=limit)
     return prospects
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from app.core.database import get_db
-from app.models import models
+
+
+
+
 
 # ... your existing GET and POST routes ...
 
@@ -44,3 +45,36 @@ def delete_prospect(prospect_id: int, db: Session = Depends(get_db)):
     db.commit()
     
     return {"status": "success", "message": "Prospect deleted"}
+
+
+
+# 1. Create a schema to validate the incoming edited data
+class ProspectUpdate(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    company_name: str
+    company_website: str
+
+# 2. Add the PUT endpoint
+@router.put("/{prospect_id}")
+def update_prospect(prospect_id: int, prospect_data: ProspectUpdate, db: Session = Depends(get_db)):
+    """Updates an existing prospect's details."""
+    
+    # Find the prospect
+    prospect = db.query(models.Prospect).filter(models.Prospect.id == prospect_id).first()
+    if not prospect:
+        raise HTTPException(status_code=404, detail="Prospect not found")
+
+    # Overwrite the old data with the new data
+    prospect.first_name = prospect_data.first_name
+    prospect.last_name = prospect_data.last_name
+    prospect.email = prospect_data.email
+    prospect.company_name = prospect_data.company_name
+    prospect.company_website = prospect_data.company_website
+
+    # Save to database
+    db.commit()
+    db.refresh(prospect)
+    
+    return prospect
