@@ -31,9 +31,20 @@ The system is split into a modular backend and frontend, designed for scalabilit
 * **Styling:** Modern CSS (Custom SaaS UI)
 * **HTTP Client:** Axios
 
+
+## Live Demo
+https://github.com/user-attachments/assets/fb6b1c87-6d69-40cc-a4fb-de3d9c96417a
+
+
+
 ## ⚙️ Local Setup & Installation
 
 ### 1. Clone the Repository
 ```bash
 git clone [https://github.com/yourusername/AutoPitch-AI.git](https://github.com/yourusername/AutoPitch-AI.git)
 cd AutoPitch-AI
+
+
+
+
+
