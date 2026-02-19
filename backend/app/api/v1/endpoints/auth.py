@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-
+from app.core.security import get_current_user
 from app.core.database import get_db
 from app.core.security import get_password_hash, verify_password, create_access_token
 from app.models.models import User
@@ -57,3 +57,21 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     
     # This specific dictionary format is required by FastAPI's OAuth2 system
     return {"access_token": access_token, "token_type": "bearer", "user_id": user.id}
+
+
+
+class SMTPSettings(BaseModel):
+    smtp_email: str
+    smtp_password: str
+
+@router.put("/settings/smtp")
+def update_smtp_settings(
+    settings: SMTPSettings, 
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)
+):
+    """Saves the user's personal Gmail App Password to their profile."""
+    current_user.smtp_email = settings.smtp_email
+    current_user.smtp_password = settings.smtp_password
+    db.commit()
+    return {"status": "success", "message": "SMTP settings saved!"}

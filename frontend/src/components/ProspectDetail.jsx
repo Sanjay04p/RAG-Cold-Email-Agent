@@ -4,28 +4,26 @@ import axios from 'axios';
 export default function ProspectDetail({ prospect, onProspectUpdated }) {
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
   
-  // --- NEW CHAT STATES ---
   const [history, setHistory] = useState([]);
   const [composeText, setComposeText] = useState("");
-  const [activeDraftId, setActiveDraftId] = useState(null); // Tracks if the current text is an AI draft
+  const [activeDraftId, setActiveDraftId] = useState(null); 
   
-  // Editing states (Keep your existing edit logic)
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({...prospect});
 
-  const chatEndRef = useRef(null); // Used to auto-scroll to the bottom
+  const chatEndRef = useRef(null);
 
-  // Fetch History on load
   useEffect(() => {
     fetchHistory();
     setIsEditing(false);
     setEditForm({...prospect});
     setComposeText("");
     setActiveDraftId(null);
+    setSendError("");
   }, [prospect]);
 
-  // Auto-scroll to bottom of chat when history updates
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [history]);
@@ -45,17 +43,16 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
       setIsEditing(false);
       onProspectUpdated();
     } catch (error) {
-      alert("Failed to update.");
+      alert("Failed to update prospect.");
     }
   };
 
-  // The AI Generation Button (Fills the text box)
   const handleGenerate = async () => {
     setLoading(true);
+    setSendError("");
     try {
       const response = await axios.post(`http://127.0.0.1:8000/api/v1/research/${prospect.id}/generate`);
-      setActiveDraftId(response.data.email_log_id); // Save the DB ID of the draft
-      
+      setActiveDraftId(response.data.email_log_id);
       const newDraft = `${response.data.generated_line}\n\nI'd love to connect and share some ideas.\n\nBest,\nSanjay`;
       setComposeText(newDraft);
     } catch (error) {
@@ -64,33 +61,34 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
     setLoading(false);
   };
 
-  // The Send Button (Handles both AI drafts and manual typing)
   const handleSend = async () => {
     if (!composeText.trim()) return;
     setSending(true);
+    setSendError("");
     
     try {
       if (activeDraftId) {
-        // Option A: Sending an AI-generated draft
         await axios.post(`http://127.0.0.1:8000/api/v1/research/send/${activeDraftId}`, {
           subject: `Quick question regarding ${prospect.company_name}`,
           edited_body: composeText
         });
       } else {
-        // Option B: Sending a manually typed message
         await axios.post(`http://127.0.0.1:8000/api/v1/research/${prospect.id}/send-manual`, {
           subject: `Following up regarding ${prospect.company_name}`,
           body: composeText
         });
       }
       
-      // Clear the box and reload the chat!
       setComposeText("");
       setActiveDraftId(null);
       fetchHistory(); 
       
     } catch (error) {
-      alert("Failed to send email. Check backend console.");
+      if (error.response && error.response.data && error.response.data.detail) {
+        setSendError(error.response.data.detail);
+      } else {
+        setSendError("Failed to send email. Please check your connection.");
+      }
     }
     setSending(false);
   };
@@ -123,7 +121,7 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
         )}
       </div>
 
-      {/* THE CHAT HISTORY AREA */}
+      {/* CHAT HISTORY AREA */}
       <div style={{ flex: 1, overflowY: 'auto', background: '#f8fafc', border: '1px solid var(--border)', borderRadius: '8px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '16px' }}>
         {history.length === 0 && (
           <p style={{ textAlign: 'center', color: 'var(--text-muted)', marginTop: '40px' }}>No emails sent yet. Start the conversation!</p>
@@ -131,10 +129,10 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
         
         {history.map((msg, index) => (
           <div key={index} style={{ 
-            alignSelf: msg.status === 'sent' ? 'flex-end' : 'center', 
-            background: msg.status === 'sent' ? '#e0f2fe' : '#f1f5f9', 
+            alignSelf: msg.status === 'sent' ? 'flex-end' : 'flex-start', 
+            background: msg.status === 'sent' ? '#e0f2fe' : '#ffffff', 
             padding: '12px 16px', 
-            borderRadius: msg.status === 'sent' ? '16px 16px 0 16px' : '8px',
+            borderRadius: msg.status === 'sent' ? '16px 16px 0 16px' : '16px 16px 16px 0',
             maxWidth: '80%',
             border: '1px solid var(--border)',
             boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
@@ -142,41 +140,49 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 8px 0', textTransform: 'uppercase', fontWeight: 'bold' }}>
               {msg.status === 'sent' ? '📤 Sent Email' : '📝 Saved Draft'}
             </p>
-            <p style={{ margin: 0, fontSize: '14px', whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>{msg.body}</p>
+            <p style={{ margin: 0, fontSize: '14px', whiteSpace: 'pre-wrap', lineHeight: '1.5', color: 'var(--text-main)' }}>{msg.body}</p>
           </div>
         ))}
-        {/* Invisible div to scroll to bottom */}
         <div ref={chatEndRef} />
       </div>
 
-      {/* THE WHATSAPP COMPOSE AREA */}
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', flexShrink: 0 }}>
-        <button 
-          className="btn" 
-          onClick={handleGenerate} 
-          disabled={loading || sending}
-          style={{ backgroundColor: '#8b5cf6', padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          title="Use AI to generate a draft"
-        >
-          {loading ? "⏳" : "✨"}
-        </button>
+      {/* COMPOSE AREA WRAPPER */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flexShrink: 0 }}>
         
-        <textarea 
-          style={{ flex: 1, minHeight: '48px', maxHeight: '120px', padding: '12px', borderRadius: '24px', border: '1px solid var(--border)', fontFamily: 'inherit', resize: 'none', outline: 'none' }}
-          placeholder="Type a message or click ✨ to use AI..."
-          value={composeText}
-          onChange={(e) => setComposeText(e.target.value)}
-        />
-        
-        <button 
-          className="btn" 
-          onClick={handleSend} 
-          disabled={sending || !composeText.trim()}
-          style={{ backgroundColor: '#10b981', padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          title="Send Email"
-        >
-          {sending ? "⏳" : "🚀"}
-        </button>
+        {sendError && (
+          <div style={{ backgroundColor: '#fee2e2', color: '#991b1b', padding: '10px 14px', borderRadius: '8px', border: '1px solid #f87171', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            ⚠️ <span><strong>Error:</strong> {sendError} Go to <strong>SMTP Settings</strong> on the sidebar to fix this.</span>
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end' }}>
+          <button 
+            className="btn" 
+            onClick={handleGenerate} 
+            disabled={loading || sending}
+            style={{ backgroundColor: '#8b5cf6', padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            title="Use AI to generate a draft"
+          >
+            {loading ? "⏳" : "✨"}
+          </button>
+          
+          <textarea 
+            style={{ flex: 1, minHeight: '48px', maxHeight: '120px', padding: '12px', borderRadius: '24px', border: '1px solid var(--border)', fontFamily: 'inherit', resize: 'none', outline: 'none' }}
+            placeholder="Type a message or click ✨ to use AI..."
+            value={composeText}
+            onChange={(e) => setComposeText(e.target.value)}
+          />
+          
+          <button 
+            className="btn" 
+            onClick={handleSend} 
+            disabled={sending || !composeText.trim()}
+            style={{ backgroundColor: '#10b981', padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            title="Send Email"
+          >
+            {sending ? "⏳" : "🚀"}
+          </button>
+        </div>
       </div>
 
     </div>

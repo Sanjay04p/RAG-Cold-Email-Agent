@@ -3,10 +3,11 @@ import axios from 'axios';
 import Dashboard from './components/Dashboard';
 import LeadForm from './components/LeadForm';
 import ProspectDetail from './components/ProspectDetail';
-import AuthPage from './components/AuthPage'; // 1. Import the Auth Page
+import AuthPage from './components/AuthPage';
+import Settings from './components/Settings';
 
-// --- THE MAGICAL AXIOS INTERCEPTOR ---
-// This automatically attaches your JWT token to EVERY single API request
+// --- GLOBAL AXIOS INTERCEPTOR ---
+// Automatically attaches the JWT token to every API request
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -18,16 +19,13 @@ axios.interceptors.request.use((config) => {
 });
 
 function App() {
-  // --- AUTHENTICATION STATE ---
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // Normal App State
   const [prospects, setProspects] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [currentView, setCurrentView] = useState('dashboard');
   const [prospectToDelete, setProspectToDelete] = useState(null); 
 
-  // Check if the user is already logged in when they refresh the page
+  // Check login status on page load
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -35,14 +33,13 @@ function App() {
     }
   }, []);
 
-  // Fetch prospects (Only runs if authenticated!)
+  // Fetch prospects if authenticated
   useEffect(() => {
     if (isAuthenticated) {
       axios.get('http://127.0.0.1:8000/api/v1/prospects/')
         .then(response => setProspects(response.data))
         .catch(error => {
           console.error("Error fetching prospects:", error);
-          // If the token is expired/invalid, log them out
           if (error.response && error.response.status === 401) {
             handleLogout();
           }
@@ -56,13 +53,13 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Destroy the passkey
-    setIsAuthenticated(false);        // Kick them back to the Auth Screen
-    setProspects([]);                 // Clear memory
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    setProspects([]);
     setCurrentView('dashboard');
   };
 
-  // --- DELETE LOGIC ---
+  // --- DELETE MODAL LOGIC ---
   const initiateDelete = (e, prospectId) => {
     e.stopPropagation();
     setProspectToDelete(prospectId);
@@ -83,14 +80,11 @@ function App() {
     }
   };
 
-  // --- RENDER THE APP ---
-
-  // 1. If not logged in, ONLY show the Auth Page
+  // --- RENDER ---
   if (!isAuthenticated) {
     return <AuthPage onLoginSuccess={() => setIsAuthenticated(true)} />;
   }
 
-  // 2. If logged in, show the full SaaS Dashboard
   const selectedProspect = prospects.find(p => p.id === currentView);
 
   return (
@@ -103,12 +97,15 @@ function App() {
           <p style={{ color: 'var(--text-muted)', margin: '4px 0 0 0', fontSize: '12px' }}>SDR Agent Workspace</p>
         </div>
 
-        <div className="sidebar-menu" style={{ flex: 1 }}>
+        <div className="sidebar-menu" style={{ flex: 1, overflowY: 'auto' }}>
           <div className={`sidebar-item ${currentView === 'dashboard' ? 'active' : ''}`} onClick={() => setCurrentView('dashboard')}>
             📊 Analytics Dashboard
           </div>
           <div className={`sidebar-item ${currentView === 'add_lead' ? 'active' : ''}`} onClick={() => setCurrentView('add_lead')}>
             ➕ Add New Lead
+          </div>
+          <div className={`sidebar-item ${currentView === 'settings' ? 'active' : ''}`} onClick={() => setCurrentView('settings')}>
+            ⚙️ SMTP Settings
           </div>
 
           <p style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 'bold', margin: '16px 0 4px 10px', textTransform: 'uppercase' }}>
@@ -126,7 +123,7 @@ function App() {
           ))}
         </div>
 
-        {/* LOGOUT BUTTON AT THE BOTTOM */}
+        {/* LOGOUT BUTTON */}
         <div style={{ padding: '20px', borderTop: '1px solid var(--border)' }}>
           <button 
             className="btn" 
@@ -142,6 +139,8 @@ function App() {
       <div className="main-workspace">
         {currentView === 'dashboard' && <Dashboard key={refreshTrigger} />}
         {currentView === 'add_lead' && <LeadForm onLeadAdded={handleLeadAdded} />}
+        {currentView === 'settings' && <Settings />}
+        
         {typeof currentView === 'number' && selectedProspect && (
           <ProspectDetail 
             key={selectedProspect.id} 
@@ -151,12 +150,12 @@ function App() {
         )}
       </div>
 
-      {/* CUSTOM DELETE MODAL */}
+      {/* DELETE MODAL */}
       {prospectToDelete && (
         <div className="modal-overlay" onClick={cancelDelete}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3 className="modal-title">Delete prospect?</h3>
-            <p className="modal-text">This will delete the prospect's details and AI email history.</p>
+            <p className="modal-text">This will delete the prospect's details and all AI email history.</p>
             <div className="modal-actions">
               <button className="btn-text" onClick={cancelDelete}>Cancel</button>
               <button className="btn-danger" onClick={confirmDelete}>Delete</button>

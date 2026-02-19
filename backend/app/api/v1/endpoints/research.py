@@ -8,7 +8,8 @@ from app.services.vector_db import vector_db
 from app.services.email_sender import email_sender
 from app.models import models
 from pydantic import BaseModel
-
+from app.core.security import get_current_user
+from app.models.models import User
 class EmailSendRequest(BaseModel):
     subject: str
     edited_body: str
@@ -75,29 +76,42 @@ def generate_email_line(prospect_id: int, db: Session = Depends(get_db)):
     }
 
 @router.post("/send/{email_log_id}")
-def send_approved_draft(email_log_id: int, db: Session = Depends(get_db)):
+def send_approved_email(
+    email_log_id: int, 
+    request: dict, # Or your EmailSendRequest schema
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # 1. Check credentials FIRST
+    if not current_user.smtp_email or not current_user.smtp_password:
+        raise HTTPException(status_code=400, detail="Please configure your Gmail SMTP settings before sending emails.")
+
     email_log = db.query(models.EmailLog).filter(models.EmailLog.id == email_log_id).first()
     if not email_log:
-        raise HTTPException(status_code=404, detail="Email draft not found")
+        raise HTTPException(status_code=404, detail="Draft not found")
         
     prospect = email_log.prospect
-    
-    full_body = f"{email_log.personalized_opening}\n\nI'd love to chat about how we can help {prospect.company_name} scale.\n\nBest,\nSanjay"
-    subject = f"Quick question regarding {prospect.company_name}"
-    
+    edited_body = request.get("edited_body", "")
+    subject = request.get("subject", "Quick question")
+    html_body = f"<html><body><p>{edited_body.replace(chr(10), '<br>')}</p></body></html>"
+
+    # 2. Attempt to send the email
     success = email_sender.send_email(
         to_email=prospect.email,
         subject=subject,
-        body=full_body
+        body=html_body,
+        sender_email=current_user.smtp_email,
+        sender_password=current_user.smtp_password
     )
     
+    # 3. ONLY update DB if the email successfully left the server
     if success:
         email_log.status = "sent"
-        email_log.full_body = full_body
+        email_log.full_body = edited_body
         db.commit()
-        return {"status": "success", "message": "Email sent and logged!"}
+        return {"status": "success", "message": "Email sent!"}
     else:
-        raise HTTPException(status_code=500, detail="Failed to send email.")
+        raise HTTPException(status_code=500, detail="Failed to send via SMTP. Check your app password.")
 
 
 @router.get("/{prospect_id}/drafts")
@@ -179,37 +193,46 @@ def get_prospect_history(prospect_id: int, db: Session = Depends(get_db)):
         } for log in logs
     ]
 
-# 3. New Route: Send a manual email (without AI generation)
+
+
 @router.post("/{prospect_id}/send-manual")
-def send_manual_email(prospect_id: int, request: ManualEmailRequest, db: Session = Depends(get_db)):
+def send_manual_email(
+    prospect_id: int, 
+    request: ManualEmailRequest, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # 1. Check credentials FIRST
+    if not current_user.smtp_email or not current_user.smtp_password:
+        raise HTTPException(status_code=400, detail="Please configure your Gmail SMTP settings before sending emails.")
+
     prospect = db.query(models.Prospect).filter(models.Prospect.id == prospect_id).first()
     if not prospect:
         raise HTTPException(status_code=404, detail="Prospect not found")
-    
-    # Save the manual message to the database
-    new_log = models.EmailLog(
-        prospect_id=prospect.id,
-        personalized_opening="Manual Follow-up",
-        full_body=request.body,
-        status="sent"
-    )
-    db.add(new_log)
-    db.commit()
-    db.refresh(new_log)
 
-    # Convert line breaks to HTML for the email body
     html_body = f"<html><body><p>{request.body.replace(chr(10), '<br>')}</p></body></html>"
     
-    # Send via SMTP
+    # 2. Attempt to send the email
     success = email_sender.send_email(
         to_email=prospect.email, 
-        subject=f"Following up regarding {prospect.company_name}", 
-        body=html_body
+        subject=request.subject, 
+        body=html_body,
+        sender_email=current_user.smtp_email,
+        sender_password=current_user.smtp_password
     )
     
-    if not success:
-        new_log.status = "failed"
+    # 3. ONLY save to DB if the email successfully left the server
+    if success:
+        new_log = models.EmailLog(
+            prospect_id=prospect.id,
+            personalized_opening="Manual Follow-up",
+            full_body=request.body,
+            status="sent"
+        )
+        db.add(new_log)
         db.commit()
-        raise HTTPException(status_code=500, detail="Failed to send SMTP email.")
+        return {"status": "success", "message": "Manual email sent!"}
+    else:
+        raise HTTPException(status_code=500, detail="Failed to send via SMTP. Check your app password.")
         
     return {"status": "success", "message": "Manual email sent!"}
