@@ -64,6 +64,15 @@ class SMTPSettings(BaseModel):
     smtp_email: str
     smtp_password: str
 
+
+@router.get("/settings/smtp")
+def get_smtp_settings(current_user: User = Depends(get_current_user)):
+    return {
+        "smtp_email": current_user.smtp_email or "",
+        "is_configured": bool(current_user.smtp_password)
+    }
+
+
 @router.put("/settings/smtp")
 def update_smtp_settings(
     settings: SMTPSettings, 
@@ -72,6 +81,7 @@ def update_smtp_settings(
 ):
     """Saves the user's personal Gmail App Password to their profile."""
     current_user.smtp_email = settings.smtp_email
-    current_user.smtp_password = settings.smtp_password
+    if settings.smtp_password:
+        current_user.smtp_password = settings.smtp_password
     db.commit()
     return {"status": "success", "message": "SMTP settings saved!"}

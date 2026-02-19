@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export default function Settings() {
@@ -7,16 +7,33 @@ export default function Settings() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
+  // Fetch saved settings from the database when the page loads
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/api/v1/auth/settings/smtp')
+      .then(response => {
+        if (response.data.smtp_email) {
+          setEmail(response.data.smtp_email);
+        }
+        if (response.data.is_configured) {
+          setAppPassword('********'); // Show dummy stars to prove it's saved
+        }
+      })
+      .catch(error => console.error("Error fetching settings:", error));
+  }, []);
+
   const handleSave = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.put('http://127.0.0.1:8000/api/v1/auth/settings/smtp', {
-        smtp_email: email,
-        smtp_password: appPassword
-      });
+      // If the password is just the placeholder stars, don't send it to the backend
+      const payload = { smtp_email: email };
+      if (appPassword !== '********') {
+        payload.smtp_password = appPassword;
+      }
+
+      await axios.put('http://127.0.0.1:8000/api/v1/auth/settings/smtp', payload);
       setMessage('✅ SMTP Credentials saved successfully!');
-      setAppPassword(''); // Clear it for security after saving
+      setAppPassword('********'); // Revert back to stars after a successful save
     } catch (error) {
       setMessage('❌ Failed to save settings.');
     }
@@ -42,7 +59,7 @@ export default function Settings() {
               style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border)' }}
               value={email} 
               onChange={(e) => setEmail(e.target.value)} 
-              placeholder="abc@gmail.com"
+              placeholder="sanjay@gmail.com"
               required 
             />
           </div>
