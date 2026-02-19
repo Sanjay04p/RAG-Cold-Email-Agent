@@ -157,3 +157,59 @@ def send_approved_email(email_log_id: int, request: EmailSendRequest, db: Sessio
         return {"status": "success", "message": "Email sent!"}
     else:
         raise HTTPException(status_code=500, detail="Failed to send via SMTP.")
+
+# 1. New Request Model for Manual Emails
+class ManualEmailRequest(BaseModel):
+    subject: str
+    body: str
+
+# 2. New Route: Fetch complete email history for the chat window
+@router.get("/{prospect_id}/history")
+def get_prospect_history(prospect_id: int, db: Session = Depends(get_db)):
+    """Fetches all past emails (drafts and sent) for a prospect."""
+    logs = db.query(models.EmailLog).filter(
+        models.EmailLog.prospect_id == prospect_id
+    ).order_by(models.EmailLog.id.asc()).all()
+    
+    return [
+        {
+            "id": log.id,
+            "status": log.status,
+            "body": log.full_body or log.personalized_opening
+        } for log in logs
+    ]
+
+# 3. New Route: Send a manual email (without AI generation)
+@router.post("/{prospect_id}/send-manual")
+def send_manual_email(prospect_id: int, request: ManualEmailRequest, db: Session = Depends(get_db)):
+    prospect = db.query(models.Prospect).filter(models.Prospect.id == prospect_id).first()
+    if not prospect:
+        raise HTTPException(status_code=404, detail="Prospect not found")
+    
+    # Save the manual message to the database
+    new_log = models.EmailLog(
+        prospect_id=prospect.id,
+        personalized_opening="Manual Follow-up",
+        full_body=request.body,
+        status="sent"
+    )
+    db.add(new_log)
+    db.commit()
+    db.refresh(new_log)
+
+    # Convert line breaks to HTML for the email body
+    html_body = f"<html><body><p>{request.body.replace(chr(10), '<br>')}</p></body></html>"
+    
+    # Send via SMTP
+    success = email_sender.send_email(
+        to_email=prospect.email, 
+        subject=f"Following up regarding {prospect.company_name}", 
+        body=html_body
+    )
+    
+    if not success:
+        new_log.status = "failed"
+        db.commit()
+        raise HTTPException(status_code=500, detail="Failed to send SMTP email.")
+        
+    return {"status": "success", "message": "Manual email sent!"}
