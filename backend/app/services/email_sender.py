@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from app.core.config import settings
 
 class EmailSenderService:
-    def send_email(to_email: str, subject: str, body: str, sender_email: str, sender_password: str) -> bool:
+    def send_email(self, to_email: str, subject: str, body: str, sender_email: str, sender_password: str) -> bool:
         try:
             msg = MIMEMultipart()
             msg['From'] = sender_email
@@ -12,11 +12,10 @@ class EmailSenderService:
             msg['Subject'] = subject
             msg.attach(MIMEText(body, 'html'))
 
-            # Assuming Gmail for now, but you could make these dynamic too!
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
             
-            # Log in as the specific user!
+            # Logs in using the specific user's credentials
             server.login(sender_email, sender_password)
             server.send_message(msg)
             server.quit()
