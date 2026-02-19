@@ -9,6 +9,63 @@ from app.models import models
 
 router = APIRouter()
 
+
+from app.core.security import get_current_user 
+from app.models.models import User
+
+router = APIRouter()
+
+# ... (Keep your ProspectCreate and ProspectUpdate schemas here) ...
+class ProspectCreate(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    company_name: str
+    company_website: str
+
+
+@router.post("/")
+def create_prospect(
+    prospect: ProspectCreate, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user) # <-- THE BOUNCER
+):
+    """Creates a new prospect linked specifically to the logged-in user."""
+    
+    # Check if this specific user already added this email
+    existing = db.query(models.Prospect).filter(
+        models.Prospect.email == prospect.email,
+        models.Prospect.owner_id == current_user.id
+    ).first()
+    
+    if existing:
+        raise HTTPException(status_code=400, detail="You already added a prospect with this email.")
+
+    # Save the new prospect and stamp it with the user's ID
+    new_prospect = models.Prospect(
+        **prospect.dict(),
+        owner_id=current_user.id 
+    )
+    db.add(new_prospect)
+    db.commit()
+    db.refresh(new_prospect)
+    return new_prospect
+
+@router.get("/")
+def get_prospects(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user) # <-- THE BOUNCER
+):
+    """Fetches ONLY the prospects owned by the logged-in user."""
+    
+    # The magical Multi-Tenancy filter!
+    prospects = db.query(models.Prospect).filter(
+        models.Prospect.owner_id == current_user.id
+    ).all()
+    
+    return prospects
+
+
 @router.post("/", response_model=prospect_schema.Prospect)
 def create_prospect(prospect: prospect_schema.ProspectCreate, db: Session = Depends(get_db)):
     db_prospect = crud.get_prospect_by_email(db, email=prospect.email)

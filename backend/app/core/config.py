@@ -12,7 +12,9 @@ class Settings(BaseSettings):
     SMTP_PORT: int = 587
     SMTP_USER: str = "placeholder_user"
     SMTP_PASSWORD: str = "placeholder_pass"
-
+    SECRET_KEY: str = "super_secret_temporary_key_for_portfolio"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
+    
     class Config:
         env_file = ".env"
 

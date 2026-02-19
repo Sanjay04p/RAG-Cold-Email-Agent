@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.core.database import engine
 from app.models import models  
-from app.api.v1.endpoints import prospects, research, analytics
+from app.api.v1.endpoints import prospects, research, analytics, auth
 # Create the database tables
 from fastapi.middleware.cors import CORSMiddleware
 models.Base.metadata.create_all(bind=engine)
@@ -31,3 +31,4 @@ def health_check():
 app.include_router(prospects.router, prefix="/api/v1/prospects", tags=["prospects"])
 app.include_router(research.router, prefix="/api/v1/research", tags=["research"]) 
 app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["analytics"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["authentication"])

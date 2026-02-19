@@ -1,50 +1,45 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Text
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-from sqlalchemy.ext.declarative import declarative_base
+from app.core.database import Base
 
-Base = declarative_base()
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+
+    # NEW: Store the user's personal SMTP credentials
+    smtp_email = Column(String, nullable=True)
+    smtp_password = Column(String, nullable=True) # Their Google App Password
+
+    prospects = relationship("Prospect", back_populates="owner")
 
 class Prospect(Base):
     __tablename__ = "prospects"
 
     id = Column(Integer, primary_key=True, index=True)
-    first_name = Column(String)
-    last_name = Column(String)
+    first_name = Column(String, index=True)
+    last_name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
-    linkedin_url = Column(String)
     company_name = Column(String)
     company_website = Column(String)
-    job_title = Column(String)
     
-    # Relationship to track emails sent to this prospect
+    # Links Prospect to the User who created it
+    owner_id = Column(Integer, ForeignKey("users.id")) 
+    
+    # THE MISSING LINES: Re-establishing the connections
+    owner = relationship("User", back_populates="prospects")
     emails = relationship("EmailLog", back_populates="prospect")
-
-class Campaign(Base):
-    __tablename__ = "campaigns"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    is_active = Column(Boolean, default=True)
-
-    emails = relationship("EmailLog", back_populates="campaign")
 
 class EmailLog(Base):
     __tablename__ = "email_logs"
 
     id = Column(Integer, primary_key=True, index=True)
     prospect_id = Column(Integer, ForeignKey("prospects.id"))
-    campaign_id = Column(Integer, ForeignKey("campaigns.id"))
-    
-    # AI Generated Content
-    subject_line = Column(String)
-    personalized_opening = Column(Text) 
-    full_body = Column(Text)
-    
-    # Analytics for A/B testing
+    personalized_opening = Column(String)
+    full_body = Column(String)
     status = Column(String, default="draft")
-    sent_at = Column(DateTime(timezone=True), nullable=True)
-
+    
+    # Links EmailLog back to the Prospect
     prospect = relationship("Prospect", back_populates="emails")
-    campaign = relationship("Campaign", back_populates="emails")
