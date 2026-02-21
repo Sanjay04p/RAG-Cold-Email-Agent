@@ -1,7 +1,6 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from app.core.config import settings
 
 class EmailSenderService:
     def send_email(self, to_email: str, subject: str, body: str, sender_email: str, sender_password: str) -> bool:
@@ -12,10 +11,10 @@ class EmailSenderService:
             msg['Subject'] = subject
             msg.attach(MIMEText(body, 'html'))
 
-            server = smtplib.SMTP('smtp.gmail.com', 443)
-            server.starttls()
+            # THE FIX: Use SMTP_SSL on Port 465 instead of standard SMTP on 587
+            # This starts a fully encrypted connection immediately, bypassing firewalls
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=15)
             
-            # Logs in using the specific user's credentials
             server.login(sender_email, sender_password)
             server.send_message(msg)
             server.quit()
@@ -24,4 +23,5 @@ class EmailSenderService:
             print(f"SMTP Error: {e}")
             return False
 
+# Ensure this instance is created at the bottom of the file
 email_sender = EmailSenderService()
