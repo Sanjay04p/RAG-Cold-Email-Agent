@@ -1,27 +1,20 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from app.core.config import settings
+import resend
+import os
 
 class EmailSenderService:
     def send_email(self, to_email: str, subject: str, body: str, sender_email: str, sender_password: str) -> bool:
-        try:
-            msg = MIMEMultipart()
-            msg['From'] = sender_email
-            msg['To'] = to_email
-            msg['Subject'] = subject
-            msg.attach(MIMEText(body, 'html'))
+        # In a real SaaS with Resend, you'd use your Resend API Key
+        # But to keep your "Gmail Settings" feature, we can use Resend's API
+        resend.api_key = os.getenv("RESEND_API_KEY") 
 
-            server = smtplib.SMTP('smtp.gmail.com', 2525)
-            server.starttls()
-            
-            # Logs in using the specific user's credentials
-            server.login(sender_email, sender_password)
-            server.send_message(msg)
-            server.quit()
+        try:
+            resend.Emails.send({
+                "from": f"Your Name <onboarding@resend.dev>", # Or your verified domain
+                "to": to_email,
+                "subject": subject,
+                "html": body,
+            })
             return True
         except Exception as e:
-            print(f"SMTP Error: {e}")
+            print(f"Resend Error: {e}")
             return False
-
-email_sender = EmailSenderService()
