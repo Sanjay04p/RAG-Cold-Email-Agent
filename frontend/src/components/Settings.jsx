@@ -9,7 +9,7 @@ export default function Settings() {
 
   // Fetch saved settings from the database when the page loads
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/v1/auth/settings/smtp')
+    axios.get('/api/v1/auth/settings/smtp')
       .then(response => {
         if (response.data.smtp_email) {
           setEmail(response.data.smtp_email);
@@ -31,7 +31,7 @@ export default function Settings() {
         payload.smtp_password = appPassword;
       }
 
-      await axios.put('http://127.0.0.1:8000/api/v1/auth/settings/smtp', payload);
+      await axios.put('/api/v1/auth/settings/smtp', payload);
       setMessage('✅ SMTP Credentials saved successfully!');
       setAppPassword('********'); // Revert back to stars after a successful save
     } catch (error) {

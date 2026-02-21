@@ -21,7 +21,7 @@ export default function AuthPage({ onLoginSuccess }) {
         formData.append('username', email); // OAuth2 expects the key to be 'username'
         formData.append('password', password);
 
-        const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/login', formData, {
+        const response = await axios.post('/api/v1/auth/login', formData, {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
 
@@ -34,7 +34,7 @@ export default function AuthPage({ onLoginSuccess }) {
       } else {
         // --- SIGNUP FLOW ---
         // Signup uses standard JSON
-        await axios.post('http://127.0.0.1:8000/api/v1/auth/signup', { 
+        await axios.post('/api/v1/auth/signup', { 
           email: email, 
           password: password 
         });

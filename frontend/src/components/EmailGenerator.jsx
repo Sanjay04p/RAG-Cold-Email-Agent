@@ -16,7 +16,7 @@ export default function EmailGenerator({ refreshTrigger }) {
 
   const fetchProspects = async () => { /* ... existing fetch code ... */ 
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/v1/prospects/');
+      const response = await axios.get('/api/v1/prospects/');
       setProspects(response.data);
     } catch (error) {
       console.error(error);
@@ -26,7 +26,7 @@ export default function EmailGenerator({ refreshTrigger }) {
   const handleGenerate = async (prospectId) => {
     setLoadingId(prospectId);
     try {
-      const response = await axios.post(`http://127.0.0.1:8000/api/v1/research/${prospectId}/generate`);
+      const response = await axios.post(`/api/v1/research/${prospectId}/generate`);
       setResults(prev => ({ ...prev, [prospectId]: response.data }));
       
       // NEW: When AI finishes, put the text into our editable state, adding a generic sign-off
@@ -43,7 +43,7 @@ export default function EmailGenerator({ refreshTrigger }) {
   const handleSend = async (prospect, emailLogId) => {
     setSendingId(prospect.id);
     try {
-      await axios.post(`http://127.0.0.1:8000/api/v1/research/send/${emailLogId}`, {
+      await axios.post(`/api/v1/research/send/${emailLogId}`, {
         subject: `Quick question regarding ${prospect.company_name}`,
         edited_body: editableEmails[prospect.id]
       });

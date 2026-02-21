@@ -6,8 +6,9 @@ import ProspectDetail from './components/ProspectDetail';
 import AuthPage from './components/AuthPage';
 import Settings from './components/Settings';
 
-// --- GLOBAL AXIOS INTERCEPTOR ---
-// Automatically attaches the JWT token to every API request
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+axios.defaults.baseURL = API_BASE_URL;
+
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -36,7 +37,7 @@ function App() {
   // Fetch prospects if authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      axios.get('http://127.0.0.1:8000/api/v1/prospects/')
+      axios.get('/api/v1/prospects/')
         .then(response => setProspects(response.data))
         .catch(error => {
           console.error("Error fetching prospects:", error);
@@ -70,7 +71,7 @@ function App() {
   const confirmDelete = async () => {
     if (!prospectToDelete) return;
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/v1/prospects/${prospectToDelete}`);
+      await axios.delete(`/api/v1/prospects/${prospectToDelete}`);
       setRefreshTrigger(prev => prev + 1);
       if (currentView === prospectToDelete) setCurrentView('dashboard');
     } catch (error) {

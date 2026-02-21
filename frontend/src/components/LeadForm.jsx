@@ -18,7 +18,7 @@ export default function LeadForm({ onLeadAdded }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/v1/prospects/', formData);
+      const response = await axios.post('/api/v1/prospects/', formData);
       alert("Lead saved successfully!");
       onLeadAdded(response.data); 
       

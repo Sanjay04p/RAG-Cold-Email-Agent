@@ -10,7 +10,7 @@ export default function Dashboard() {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/v1/analytics/summary');
+      const response = await axios.get('/api/v1/analytics/summary');
       setStats(response.data.data);
     } catch (error) {
       console.error("Error fetching stats:", error);

@@ -30,7 +30,7 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
 
   const fetchHistory = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/v1/research/${prospect.id}/history`);
+      const response = await axios.get(`/api/v1/research/${prospect.id}/history`);
       setHistory(response.data);
     } catch (error) {
       console.error("Error fetching history:", error);
@@ -39,7 +39,7 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://127.0.0.1:8000/api/v1/prospects/${prospect.id}`, editForm);
+      await axios.put(`/api/v1/prospects/${prospect.id}`, editForm);
       setIsEditing(false);
       onProspectUpdated();
     } catch (error) {
@@ -51,7 +51,7 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
     setLoading(true);
     setSendError("");
     try {
-      const response = await axios.post(`http://127.0.0.1:8000/api/v1/research/${prospect.id}/generate`);
+      const response = await axios.post(`/api/v1/research/${prospect.id}/generate`);
       setActiveDraftId(response.data.email_log_id);
       const newDraft = `${response.data.generated_line}\n\nI'd love to connect and share some ideas.\n\nBest,\nSanjay`;
       setComposeText(newDraft);
@@ -68,12 +68,12 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
     
     try {
       if (activeDraftId) {
-        await axios.post(`http://127.0.0.1:8000/api/v1/research/send/${activeDraftId}`, {
+        await axios.post(`/api/v1/research/send/${activeDraftId}`, {
           subject: `Quick question regarding ${prospect.company_name}`,
           edited_body: composeText
         });
       } else {
-        await axios.post(`http://127.0.0.1:8000/api/v1/research/${prospect.id}/send-manual`, {
+        await axios.post(`/api/v1/research/${prospect.id}/send-manual`, {
           subject: `Following up regarding ${prospect.company_name}`,
           body: composeText
         });
