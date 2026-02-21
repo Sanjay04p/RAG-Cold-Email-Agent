@@ -12,7 +12,7 @@ class EmailSenderService:
             msg['Subject'] = subject
             msg.attach(MIMEText(body, 'html'))
 
-            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server = smtplib.SMTP('smtp.gmail.com', 2525)
             server.starttls()
             
             # Logs in using the specific user's credentials
