@@ -33,5 +33,5 @@ https://github.com/user-attachments/assets/fb6b1c87-6d69-40cc-a4fb-de3d9c96417a
 
 ### Clone the Repository
 ```bash
-git clone [https://github.com/yourusername/AutoPitch-AI.git](https://github.com/yourusername/AutoPitch-AI.git)
-cd AutoPitch-AI
+git clone https://github.com/Sanjay04p/RAG-Cold-Email-Agent.git
+cd RAG-Cold-Email-Agent
