@@ -40,3 +40,26 @@
 .read-the-docs {
   color: #888;
 }
+
+@media (max-width: 768px) {
+  
+  .app-layout {
+    flex-direction: column !important;
+  }
+  
+  
+  .sidebar {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 220px; 
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+    overflow-y: auto;
+  }
+
+  
+  .main-workspace {
+    width: 100% !important;
+    padding: 10px !important;
+  }
+}
