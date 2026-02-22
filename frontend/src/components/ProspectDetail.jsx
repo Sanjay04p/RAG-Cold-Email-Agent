@@ -66,15 +66,24 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
     setSending(true);
     setSendError("");
     
+    const subject = `Following up regarding ${prospect.company_name}`;
+
+    // 1. Construct the magic Gmail Compose URL
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(prospect.email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(composeText)}`;
+
     try {
+      // 2. Open Gmail in a new tab for the user to hit "Send"
+      window.open(gmailUrl, '_blank');
+
+      // 3. Tell the backend to LOG the email in the chat history
       if (activeDraftId) {
         await axios.post(`/api/v1/research/send/${activeDraftId}`, {
-          subject: `Quick question regarding ${prospect.company_name}`,
+          subject: subject,
           edited_body: composeText
         });
       } else {
         await axios.post(`/api/v1/research/${prospect.id}/send-manual`, {
-          subject: `Following up regarding ${prospect.company_name}`,
+          subject: subject,
           body: composeText
         });
       }
@@ -84,11 +93,7 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
       fetchHistory(); 
       
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.detail) {
-        setSendError(error.response.data.detail);
-      } else {
-        setSendError("Failed to send email. Please check your connection.");
-      }
+      setSendError("Failed to save email history.");
     }
     setSending(false);
   };
