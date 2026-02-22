@@ -263,23 +263,91 @@ body {
 }
 
 /* --- MOBILE LAYOUT (Under 768px) --- */
+/* --- MOBILE LAYOUT (Under 768px) --- */
 @media screen and (max-width: 768px) {
   .app-layout {
     flex-direction: column !important;
-    overflow-y: auto !important;
   }
   
+  /* 1. Turn the sidebar into a horizontal swipeable bar */
   .sidebar {
     width: 100% !important;
-    height: 250px !important; /* Limits the height on mobile */
-    min-height: 250px !important;
+    height: 70px !important; 
+    min-height: 70px !important;
+    flex-direction: row !important; 
+    align-items: center !important;
+    padding: 0 10px !important;
+    overflow-x: auto !important; 
+    white-space: nowrap !important; 
     border-right: none !important;
-    border-bottom: 2px solid var(--border) !important;
+    border-bottom: 1px solid var(--border) !important;
+    
+    /* Hide ugly scrollbars on mobile */
+    -ms-overflow-style: none;
+    scrollbar-width: none; 
+  }
+  
+  .sidebar::-webkit-scrollbar {
+    display: none;
   }
 
+  /* 2. Hide the giant logo text to save space */
+  .sidebar-header {
+    display: none !important; 
+  }
+
+  /* 3. Make the menu items flow left-to-right */
+  .sidebar-menu {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    overflow-y: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 10px !important;
+  }
+
+  /* 4. Style the links as swipeable 'pills' */
+  .sidebar-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important; 
+    background-color: #f1f5f9 !important;
+    font-size: 14px !important;
+    margin: 0 !important;
+    border: none !important;
+  }
+
+  .sidebar-item.active {
+    background-color: #2563eb !important; 
+    color: white !important;
+  }
+
+  /* 5. Hide the extra text (like company names) inside the pills */
+  .sidebar-menu > p,
+  .sidebar-item > div > div {
+    display: none !important; 
+  }
+
+  /* 6. Clean up the Logout button to match the pills */
+  .sidebar > div:last-child {
+    padding: 0 !important;
+    border: none !important;
+    margin-left: 10px !important;
+  }
+  
+  .sidebar > div:last-child button {
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    width: auto !important;
+    white-space: nowrap !important;
+  }
+
+  /* 7. Ensure the workspace takes the remaining screen exactly */
   .main-workspace {
     width: 100% !important;
-    padding: 10px !important;
-    height: auto !important;
+    padding: 15px !important;
+    height: calc(100vh - 70px) !important;
   }
 }
