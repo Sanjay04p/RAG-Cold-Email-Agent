@@ -41,10 +41,10 @@ export default function Settings() {
   };
 
   return (
-    <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', maxWidth: '900px', margin: '0 auto' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start', maxWidth: '900px', margin: '0 auto' }}>
       
       {/* LEFT SIDE: The Input Form */}
-      <div className="card" style={{ flex: 1 }}>
+      <div className="card" style={{ flex: 1, minWidth: '300px' }}>
         <h2 style={{ marginTop: 0 }}>Email Configuration</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '24px' }}>
           To send emails directly from your own account, enter your Gmail and App Password below.
@@ -96,7 +96,7 @@ export default function Settings() {
       </div>
 
       {/* RIGHT SIDE: The Instructions */}
-      <div className="card" style={{ flex: 1, backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }}>
+      <div className="card" style={{ flex: 1, minWidth: '300px',backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }}>
         <h3 style={{ marginTop: 0, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
           ℹ️ How to get your App Password
         </h3>
