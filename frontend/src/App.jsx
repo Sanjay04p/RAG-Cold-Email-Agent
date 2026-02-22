@@ -4,7 +4,6 @@ import Dashboard from './components/Dashboard';
 import LeadForm from './components/LeadForm';
 import ProspectDetail from './components/ProspectDetail';
 import AuthPage from './components/AuthPage';
-import Settings from './components/Settings';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 axios.defaults.baseURL = API_BASE_URL;
@@ -105,9 +104,6 @@ function App() {
           <div className={`sidebar-item ${currentView === 'add_lead' ? 'active' : ''}`} onClick={() => setCurrentView('add_lead')}>
             ➕ Add New Lead
           </div>
-          <div className={`sidebar-item ${currentView === 'settings' ? 'active' : ''}`} onClick={() => setCurrentView('settings')}>
-            ⚙️ SMTP Settings
-          </div>
 
           <p style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 'bold', margin: '16px 0 4px 10px', textTransform: 'uppercase' }}>
             Your Prospects
@@ -140,7 +136,7 @@ function App() {
       <div className="main-workspace">
         {currentView === 'dashboard' && <Dashboard key={refreshTrigger} />}
         {currentView === 'add_lead' && <LeadForm onLeadAdded={handleLeadAdded} />}
-        {currentView === 'settings' && <Settings />}
+        
         
         {typeof currentView === 'number' && selectedProspect && (
           <ProspectDetail 
