@@ -92,7 +92,7 @@ function App() {
     <div className="app-layout">
       
       {/* LEFT SIDEBAR */}
-      <div className="sidebar" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div className="sidebar">
         <div className="sidebar-header">
           <h2 style={{ color: 'var(--primary)', margin: '0' }}>AutoPitch AI</h2>
           <p style={{ color: 'var(--text-muted)', margin: '4px 0 0 0', fontSize: '12px' }}>SDR Agent Workspace</p>
