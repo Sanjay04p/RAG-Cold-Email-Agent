@@ -238,4 +238,48 @@ body {
   background: #fee2e2;
 }
 
+/* --- BASE DESKTOP LAYOUT --- */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
 
+.sidebar {
+  width: 260px;
+  background-color: #ffffff;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.main-workspace {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #f8fafc;
+}
+
+/* --- MOBILE LAYOUT (Under 768px) --- */
+@media screen and (max-width: 768px) {
+  .app-layout {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+  
+  .sidebar {
+    width: 100% !important;
+    height: 250px !important; /* Limits the height on mobile */
+    min-height: 250px !important;
+    border-right: none !important;
+    border-bottom: 2px solid var(--border) !important;
+  }
+
+  .main-workspace {
+    width: 100% !important;
+    padding: 10px !important;
+    height: auto !important;
+  }
+}
