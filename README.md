@@ -1,35 +1,27 @@
-# AutoPitch AI: RAG-Powered B2B Sales Agent 🚀
+# 🚀 ColdReach AI: LLM-Driven Cold Email Engine
 
-AutoPitch AI is an end-to-end, automated outbound sales engine. It takes a prospect's company URL, invisibly scrapes their recent website data bypassing anti-bot measures, vectorizes the context, and uses a Retrieval-Augmented Generation (RAG) pipeline to draft hyper-personalized, high-converting cold emails.
+An intelligent, full-stack B2B sales development platform that automates prospect research and generates hyper-personalized cold emails at scale. 
 
-## 🧠 System Architecture
+Built with **FastAPI**, **React**, and **Google Gemini**, ColdReach AI slashes the time SDRs spend researching leads by analyzing company data and drafting context-aware outreach that actually converts.
 
+## ✨ Key Features
+* **AI-Powered Personalization:** Integrates with the Gemini API to analyze prospect backgrounds and generate highly specific, non-generic opening lines.
+* **Smart Web Intents (Firewall Bypass):** Utilizes secure Gmail deep-linking to execute email delivery directly from the user's authenticated browser, bypassing strict cloud provider SMTP port blocks.
+* **Responsive Dashboard UI:** A mobile-optimized React interface for seamless management of prospects, email drafts, and outreach history.
+* **Persistent Cloud Storage:** Fully integrated with a production PostgreSQL database for real-time state management and history tracking.
 
+## 🛠️ Tech Stack & Architecture
+* **Frontend:** React.js, Vite, Axios, Custom CSS (Fully Responsive)
+* **Backend:** FastAPI, Python 3.12, SQLAlchemy, Pydantic
+* **Database:** PostgreSQL (Hosted on Neon)
+* **AI / NLP:** Google Gemini Generative AI, Pinecone (Vector Search)
+* **Deployment & CI/CD:** Vercel (Frontend), Render (Backend)
 
-The system is split into a modular backend and frontend, designed for scalability:
+## 💡 Engineering Challenges & Solutions
+**The Challenge:** Deploying a backend application on a free-tier cloud environment (Render) that strictly blocks outbound SMTP traffic (Ports 465/587) to prevent spam, making standard `smtplib` email delivery impossible.
 
-1. **The Scraper (Data Ingestion):** Utilizes `playwright-stealth` to launch an invisible headless Chromium browser, bypassing Cloudflare/DataDome bot protections to extract raw HTML from modern dynamic websites (React/Next.js).
-2. **The Memory (Vector Database):** Text chunks are passed through Google's `gemini-embedding-001` model to generate 768-dimensional vectors, which are stored and indexed in **Pinecone**.
-3. **The Brain (LLM Generation):** When generating an email, the system queries Pinecone for the most relevant company news or product updates, injecting them as context into **Gemini 2.5 Flash** to write a highly targeted, non-generic opening hook.
-4. **The Interface (React & FastAPI):** A lightning-fast React frontend communicates with a Python/FastAPI backend, storing generated drafts and pipeline analytics in a localized SQLite/PostgreSQL database using SQLAlchemy.
+**The Solution:** Instead of relying on expensive third-party APIs or premium server tiers, I re-architected the delivery flow to use **URL Web Intents**. The FastAPI backend generates the personalized payload and sends it to the React frontend, which constructs an encoded Gmail compose URL. This offloads the actual sending action to the user's local, authenticated browser, guaranteeing 100% deliverability with zero infrastructure cost.
 
-## 🛠️ Tech Stack
-
-**AI & Machine Learning:**
-* **LLM:** Google Gemini 2.5 Flash (`google-genai` SDK)
-* **Embeddings:** Gemini Embedding-001
-* **Vector DB:** Pinecone (Serverless)
-* **Data Extraction:** Playwright (Stealth Mode) + BeautifulSoup4
-
-**Backend:**
-* **Framework:** FastAPI (Python 3.11)
-* **ORM/Database:** SQLAlchemy + SQLite (Designed to scale to PostgreSQL)
-* **Environment:** Venv
-
-**Frontend:**
-* **Framework:** React + Vite
-* **Styling:** Modern CSS (Custom SaaS UI)
-* **HTTP Client:** Axios
 
 
 ## Live Demo
@@ -39,7 +31,7 @@ https://github.com/user-attachments/assets/fb6b1c87-6d69-40cc-a4fb-de3d9c96417a
 
 ## ⚙️ Local Setup & Installation
 
-### 1. Clone the Repository
+### Clone the Repository
 ```bash
-git clone [https://github.com/yourusername/AutoPitch-AI.git](https://github.com/yourusername/AutoPitch-AI.git)
-cd AutoPitch-AI
+git clone https://github.com/Sanjay04p/RAG-Cold-Email-Agent.git
+cd RAG-Cold-Email-Agent
