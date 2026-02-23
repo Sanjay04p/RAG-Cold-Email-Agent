@@ -75,45 +75,6 @@ def generate_email_line(prospect_id: int, db: Session = Depends(get_db)):
         "generated_line": saved_email.personalized_opening
     }
 
-@router.post("/send/{email_log_id}")
-def send_approved_email(
-    email_log_id: int, 
-    request: dict, # Or your EmailSendRequest schema
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    # 1. Check credentials FIRST
-    if not current_user.smtp_email or not current_user.smtp_password:
-        raise HTTPException(status_code=400, detail="Please configure your Gmail SMTP settings before sending emails.")
-
-    email_log = db.query(models.EmailLog).filter(models.EmailLog.id == email_log_id).first()
-    if not email_log:
-        raise HTTPException(status_code=404, detail="Draft not found")
-        
-    prospect = email_log.prospect
-    edited_body = request.get("edited_body", "")
-    subject = request.get("subject", "Quick question")
-    html_body = f"<html><body><p>{edited_body.replace(chr(10), '<br>')}</p></body></html>"
-
-    # 2. Attempt to send the email
-    success = email_sender.send_email(
-        to_email=prospect.email,
-        subject=subject,
-        body=html_body,
-        sender_email=current_user.smtp_email,
-        sender_password=current_user.smtp_password
-    )
-    
-    # 3. ONLY update DB if the email successfully left the server
-    if success:
-        email_log.status = "sent"
-        email_log.full_body = edited_body
-        db.commit()
-        return {"status": "success", "message": "Email sent!"}
-    else:
-        raise HTTPException(status_code=500, detail="Failed to send via SMTP. Check your app password.")
-
-
 @router.get("/{prospect_id}/drafts")
 def get_prospect_drafts(prospect_id: int, db: Session = Depends(get_db)):
     """Fetches the most recent AI generated email for a prospect."""

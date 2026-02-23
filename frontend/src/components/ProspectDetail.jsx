@@ -93,7 +93,9 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
       fetchHistory(); 
       
     } catch (error) {
-      setSendError("Failed to save email history.");
+      console.error("History Save Error:", error);
+      const serverError = error.response?.data?.detail || error.message;
+      setSendError(`Failed to save email history: ${serverError}`);
     }
     setSending(false);
   };
