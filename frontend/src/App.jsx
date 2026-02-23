@@ -4,7 +4,6 @@ import Dashboard from './components/Dashboard';
 import LeadForm from './components/LeadForm';
 import ProspectDetail from './components/ProspectDetail';
 import AuthPage from './components/AuthPage';
-
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 axios.defaults.baseURL = API_BASE_URL;
 
@@ -86,11 +85,11 @@ function App() {
   }
 
   const selectedProspect = prospects.find(p => p.id === currentView);
-
+  // const location = useLocation();
   return (
     <div className="app-layout">
       
-      {/* LEFT SIDEBAR */}
+      {/* LEFT SIDEBAR (Hidden on Mobile via CSS) */}
       <div className="sidebar">
         <div className="sidebar-header">
           <h2 style={{ color: 'var(--primary)', margin: '0' }}>AutoPitch AI</h2>
@@ -136,8 +135,34 @@ function App() {
       <div className="main-workspace">
         {currentView === 'dashboard' && <Dashboard key={refreshTrigger} />}
         {currentView === 'add_lead' && <LeadForm onLeadAdded={handleLeadAdded} />}
-        
-        
+        {currentView === 'chat_list' && (
+          <div className="chat-list-container">
+            <div className="chat-list-header">Chats</div>
+            
+            {prospects.length === 0 ? (
+              <div style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
+                No prospects yet. Tap 'Add Lead' to start!
+              </div>
+            ) : (
+              prospects.map(prospect => (
+                <div 
+                  key={prospect.id} 
+                  className="chat-list-item"
+                  onClick={() => setCurrentView(prospect.id)}
+                >
+                  <div className="chat-avatar">
+                    {/* Grabs the first letter of first and last name for the avatar */}
+                    {prospect.first_name.charAt(0)}{prospect.last_name ? prospect.last_name.charAt(0) : ''}
+                  </div>
+                  <div className="chat-info">
+                    <div className="chat-name">{prospect.first_name} {prospect.last_name}</div>
+                    <div className="chat-company">{prospect.company_name}</div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
         {typeof currentView === 'number' && selectedProspect && (
           <ProspectDetail 
             key={selectedProspect.id} 
@@ -161,6 +186,33 @@ function App() {
         </div>
       )}
       
+      {/* NEW: MOBILE BOTTOM NAV (Fixed State Logic) */}
+      <div className="mobile-bottom-nav">
+        <div 
+          className={`nav-item ${(currentView !== 'dashboard' && currentView !== 'add_lead') ? 'active' : ''}`} 
+          onClick={() => setCurrentView('chat_list')}
+        >
+          <span className="nav-icon">💬</span>
+          <span>Chats</span>
+        </div>
+        
+        <div 
+          className={`nav-item ${currentView === 'add_lead' ? 'active' : ''}`} 
+          onClick={() => setCurrentView('add_lead')}
+        >
+          <span className="nav-icon">➕</span>
+          <span>Add Lead</span>
+        </div>
+
+        <div 
+          className={`nav-item ${currentView === 'dashboard' ? 'active' : ''}`} 
+          onClick={() => setCurrentView('dashboard')}
+        >
+          <span className="nav-icon">📊</span>
+          <span>Stats</span>
+        </div>
+      </div>
+
     </div> 
   );
 }

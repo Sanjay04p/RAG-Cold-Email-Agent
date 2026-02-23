@@ -160,7 +160,7 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end' }}>
+        <div className='chat-input-wrapper'>
           <button 
             className="btn" 
             onClick={handleGenerate} 

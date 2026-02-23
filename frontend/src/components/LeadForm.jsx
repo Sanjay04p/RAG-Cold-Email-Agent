@@ -31,10 +31,10 @@ export default function LeadForm({ onLeadAdded }) {
     setLoading(false);
   };
 
-  return (
+ return (
     <div className="card">
       <h2>➕ Add New Prospect</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+      <form onSubmit={handleSubmit} className="lead-form-grid">
         
         <div className="form-group">
           <label>First Name</label>
@@ -52,12 +52,13 @@ export default function LeadForm({ onLeadAdded }) {
           <label>Company Name</label>
           <input name="company_name" value={formData.company_name} onChange={handleChange} required />
         </div>
-        <div className="form-group" style={{ gridColumn: 'span 2' }}>
+        
+        <div className="form-group form-full-width">
           <label>Company Website (Required for AI Scraping)</label>
           <input name="company_website" type="url" placeholder="https://example.com" value={formData.company_website} onChange={handleChange} required />
         </div>
 
-        <div style={{ gridColumn: 'span 2' }}>
+        <div className="form-full-width" style={{ marginTop: '10px' }}>
           <button type="submit" className="btn" disabled={loading}>
             {loading ? "Saving..." : "Save Lead"}
           </button>

@@ -77,9 +77,7 @@ body {
   cursor: not-allowed;
 }
 
-
-/* Add this to the bottom of your src/index.css */
-
+/* --- BASE DESKTOP LAYOUT --- */
 .app-layout {
   display: flex;
   height: 100vh;
@@ -88,7 +86,7 @@ body {
 }
 
 .sidebar {
-  width: 280px;
+  width: 280px; /* Updated to 280px from your code */
   background-color: #ffffff;
   border-right: 1px solid var(--border);
   display: flex;
@@ -116,32 +114,26 @@ body {
   font-weight: 500;
   transition: all 0.2s;
   border: 1px solid transparent;
-  
-  /* NEW: Flexbox to push the trash can to the far right */
   display: flex;
   justify-content: space-between;
   align-items: center; 
 }
 
-/* ... existing hover and active states ... */
-
-/* NEW: The Trash Can Button CSS */
 .delete-btn {
   background: none;
   border: none;
   font-size: 16px;
   cursor: pointer;
-  opacity: 0; /* Hidden by default */
+  opacity: 0; 
   transition: opacity 0.2s, background-color 0.2s;
   padding: 6px;
   border-radius: 4px;
 }
 
 .delete-btn:hover {
-  background-color: #fee2e2; /* Light red hover background */
+  background-color: #fee2e2; 
 }
 
-/* When hovering over the sidebar item, make the delete button visible */
 .sidebar-item:hover .delete-btn {
   opacity: 1;
 }
@@ -163,7 +155,6 @@ body {
   overflow-y: auto;
 }
 
-
 /* --- CUSTOM DELETE MODAL --- */
 .modal-overlay {
   position: fixed;
@@ -171,12 +162,12 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.4); /* Dimmed backdrop */
+  background: rgba(0, 0, 0, 0.4); 
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(2px); /* Slight blur effect */
+  backdrop-filter: blur(2px); 
 }
 
 .modal-content {
@@ -226,7 +217,7 @@ body {
 .btn-danger {
   background: transparent;
   border: none;
-  color: #dc2626; /* Deep Red */
+  color: #dc2626; 
   font-weight: 500;
   padding: 10px 16px;
   border-radius: 20px;
@@ -238,116 +229,238 @@ body {
   background: #fee2e2;
 }
 
-/* --- BASE DESKTOP LAYOUT --- */
-.app-layout {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+/* --- DESKTOP FORM GRID --- */
+.lead-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
-.sidebar {
-  width: 260px;
+.form-full-width {
+  grid-column: span 2;
+}
+
+/* --- WHATSAPP-STYLE CHAT LIST (Mobile View) --- */
+.chat-list-container {
+  width: 100%;
   background-color: #ffffff;
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
 }
 
-.main-workspace {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
+.chat-list-header {
+  padding: 15px 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 20px;
+  font-weight: bold;
+  color: #1e293b;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.chat-list-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.chat-list-item:active {
   background-color: #f8fafc;
 }
 
-/* --- MOBILE LAYOUT (Under 768px) --- */
-/* --- MOBILE LAYOUT (Under 768px) --- */
+.chat-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #2563eb;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.chat-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.chat-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-company {
+  font-size: 14px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.chat-input-wrapper {
+    display: flex !important;
+    flex-direction: row !important; /* Force horizontal row */
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
+/* =========================================
+   WHATSAPP-STYLE MOBILE UI (Under 768px)
+   ========================================= */
 @media screen and (max-width: 768px) {
   .app-layout {
     flex-direction: column !important;
+    height: 100dvh !important; 
+    background-color: #f0f2f5 !important; 
   }
-  
-  /* 1. Turn the sidebar into a horizontal swipeable bar */
+
   .sidebar {
-    width: 100% !important;
-    height: 70px !important; 
-    min-height: 70px !important;
-    flex-direction: row !important; 
-    align-items: center !important;
-    padding: 0 10px !important;
-    overflow-x: auto !important; 
-    white-space: nowrap !important; 
-    border-right: none !important;
-    border-bottom: 1px solid var(--border) !important;
-    
-    /* Hide ugly scrollbars on mobile */
-    -ms-overflow-style: none;
-    scrollbar-width: none; 
-  }
-  
-  .sidebar::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
 
-  /* 2. Hide the giant logo text to save space */
-  .sidebar-header {
-    display: none !important; 
-  }
-
-  /* 3. Make the menu items flow left-to-right */
-  .sidebar-menu {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    overflow-y: hidden !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    gap: 10px !important;
-  }
-
-  /* 4. Style the links as swipeable 'pills' */
-  .sidebar-item {
-    display: inline-flex !important;
-    align-items: center !important;
-    padding: 8px 16px !important;
-    border-radius: 20px !important; 
-    background-color: #f1f5f9 !important;
-    font-size: 14px !important;
-    margin: 0 !important;
-    border: none !important;
-  }
-
-  .sidebar-item.active {
-    background-color: #2563eb !important; 
-    color: white !important;
-  }
-
-  /* 5. Hide the extra text (like company names) inside the pills */
-  .sidebar-menu > p,
-  .sidebar-item > div > div {
-    display: none !important; 
-  }
-
-  /* 6. Clean up the Logout button to match the pills */
-  .sidebar > div:last-child {
-    padding: 0 !important;
-    border: none !important;
-    margin-left: 10px !important;
-  }
-  
-  .sidebar > div:last-child button {
-    padding: 8px 16px !important;
-    border-radius: 20px !important;
-    width: auto !important;
-    white-space: nowrap !important;
-  }
-
-  /* 7. Ensure the workspace takes the remaining screen exactly */
   .main-workspace {
     width: 100% !important;
+    padding: 0 !important; 
+    height: calc(100dvh - 65px) !important; 
+    overflow-y: auto !important;
+    padding-bottom: 20px !important;
+  }
+
+  .mobile-bottom-nav {
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 65px !important;
+    background-color: #ffffff !important;
+    border-top: 1px solid #e2e8f0 !important;
+    z-index: 1000 !important;
+    padding-bottom: env(safe-area-inset-bottom); 
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 12px;
+    gap: 4px;
+    width: 33%;
+  }
+
+  .nav-item.active {
+    color: #2563eb; 
+    font-weight: 600;
+  }
+
+  .nav-icon {
+    font-size: 24px; 
+  }
+
+  /* --- FIXED: These rules are now SAFELY inside the Mobile block --- */
+  
+  /* 1. Remove the bulky card background so it looks like a native app screen */
+  .card, form {
+    box-shadow: none !important;
+    border: none !important;
+    background-color: transparent !important;
     padding: 15px !important;
-    height: calc(100vh - 70px) !important;
+  }
+
+  /* 2. Force any side-by-side containers to stack vertically */
+  form > div, 
+  .card > div {
+    flex-direction: column !important;
+    gap: 0px !important; 
+  }
+
+  /* 3. Make inputs 100% width and thumb-friendly (taller) */
+  input[type="text"],
+  input[type="email"],
+  input[type="url"] {
+    width: 100% !important;
+    padding: 14px 12px !important;
+    margin-bottom: 16px !important;
+    border-radius: 8px !important;
+    font-size: 16px !important; 
+    box-sizing: border-box !important;
+  }
+
+  /* 4. Make the Save Button massive and centered at the bottom */
+  button[type="submit"],
+  .btn {
+    width: 100% !important;
+    padding: 16px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    margin-top: 10px !important;
+  }
+
+  /* Stack form fields into a single column on mobile */
+  .lead-form-grid {
+    grid-template-columns: 1fr !important; 
+    gap: 12px !important;
+  }
+
+  .form-full-width {
+    grid-column: span 1 !important;
+  }
+
+  .chat-input-wrapper {
+    display: flex !important;
+    flex-direction: row !important; /* Force horizontal row */
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
+
+  /* Stop the chat buttons from becoming 100% width */
+  .chat-input-wrapper button {
+    width: auto !important; 
+    flex-shrink: 0 !important; /* Prevent buttons from getting squished */
+    margin-top: 0 !important;
+    padding: 12px 18px !important;
+    border-radius: 24px !important; /* Round iOS-style buttons */
+  }
+
+  /* Force the text box to fill the middle space */
+  .chat-input-wrapper input,
+  .chat-input-wrapper textarea {
+    flex: 1 !important; /* Take up all available space between the buttons */
+    margin-bottom: 0 !important; /* Remove form margin */
+    padding: 12px 16px !important;
+    border-radius: 24px !important; /* Pill shape for the text box */
+    min-width: 0 !important; /* Prevents flexbox overflow bugs */
+  }
+
+
+} /* <--- This closing bracket was missing/misplaced before! */
+
+/* Hide the bottom nav on Desktop */
+@media screen and (min-width: 769px) {
+  .mobile-bottom-nav {
+    display: none !important;
   }
 }
