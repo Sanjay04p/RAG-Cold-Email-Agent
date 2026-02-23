@@ -68,7 +68,7 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
     
     const subject = `Following up regarding ${prospect.company_name}`;
 
-    // 1. Construct the magic Gmail Compose URL
+    // 1. Construct the Gmail Compose URL
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(prospect.email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(composeText)}`;
 
     try {
