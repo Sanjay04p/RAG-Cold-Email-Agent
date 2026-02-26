@@ -120,7 +120,21 @@ function App() {
         </div>
 
         {/* LOGOUT BUTTON */}
-        <div style={{ padding: '20px', borderTop: '1px solid var(--border)' }}>
+        <div style={{ padding: '20px', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
+
+
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '15px' }}>
+            Built by <a 
+              href="https://sanjay04p.netlify.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '600' }}
+            >
+              Sanjay Pattanashetti
+            </a>
+          </div>
+
+
           <button 
             className="btn" 
             style={{ width: '100%', backgroundColor: '#f1f5f9', color: '#dc2626', border: '1px solid #fee2e2' }} 
