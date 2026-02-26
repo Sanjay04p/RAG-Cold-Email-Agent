@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
 export default function EmailGenerator({ refreshTrigger }) {
   const [prospects, setProspects] = useState([]);
   const [loadingId, setLoadingId] = useState(null); 

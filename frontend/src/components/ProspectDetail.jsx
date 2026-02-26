@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-
+import { Sparkles, Send, Hourglass, CheckCheck, FileEdit, Pencil, Save} from 'lucide-react';
 export default function ProspectDetail({ prospect, onProspectUpdated }) {
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
@@ -113,7 +113,7 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
             </div>
             <input className="form-group input" style={{ padding: '8px' }} value={editForm.email} onChange={(e) => setEditForm({...editForm, email: e.target.value})} placeholder="Email" />
             <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-              <button className="btn" style={{ backgroundColor: '#10b981', padding: '6px 12px' }} onClick={handleSaveEdit}>💾 Save</button>
+              <button className="btn" style={{ backgroundColor: '#10b981', padding: '6px 12px', display:'flex', gap:'6px', alignItems:'center'}} onClick={handleSaveEdit}><Save size={16}/>Save</button>
               <button className="btn" style={{ backgroundColor: '#64748b', padding: '6px 12px' }} onClick={() => setIsEditing(false)}>Cancel</button>
             </div>
           </div>
@@ -121,7 +121,9 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
           <div>
             <h2 style={{ margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
               {prospect.first_name} {prospect.last_name}
-              <button onClick={() => setIsEditing(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>✏️</button>
+              <span style={{ cursor: 'pointer', color: '#64748b', display: 'flex' }} title="Edit Prospect">
+                <Pencil size={16} onClick={() => setIsEditing(true)} />
+              </span>
             </h2>
             <p style={{ margin: 0, color: 'var(--text-muted)' }}>{prospect.company_name} | {prospect.company_website}</p>
           </div>
@@ -145,7 +147,15 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
             boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
           }}>
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 8px 0', textTransform: 'uppercase', fontWeight: 'bold' }}>
-              {msg.status === 'sent' ? '📤 Sent Email' : '📝 Saved Draft'}
+              {msg.status === 'sent' ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#3b82f6', fontWeight: '600' }}>
+              <CheckCheck size={16} /> Sent Email
+            </span>
+          ) : (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#64748b', fontWeight: '600' }}>
+              <FileEdit size={16} /> Saved Draft
+            </span>
+          )}
             </p>
             <p style={{ margin: 0, fontSize: '14px', whiteSpace: 'pre-wrap', lineHeight: '1.5', color: 'var(--text-main)' }}>{msg.body}</p>
           </div>
@@ -167,27 +177,29 @@ export default function ProspectDetail({ prospect, onProspectUpdated }) {
             className="btn" 
             onClick={handleGenerate} 
             disabled={loading || sending}
-            style={{ backgroundColor: '#8b5cf6', padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            style={{ backgroundColor: '#8b5cf6', padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' }}
             title="Use AI to generate a draft"
           >
-            {loading ? "⏳" : "✨"}
+            {loading ? <Hourglass size={20} /> : <Sparkles size={20} />}
           </button>
           
+          {/* TEXT AREA */}
           <textarea 
             style={{ flex: 1, minHeight: '48px', maxHeight: '120px', padding: '12px', borderRadius: '24px', border: '1px solid var(--border)', fontFamily: 'inherit', resize: 'none', outline: 'none' }}
-            placeholder="Type a message or click ✨ to use AI..."
+            placeholder="Type a message or click the sparkles to use AI..."
             value={composeText}
             onChange={(e) => setComposeText(e.target.value)}
           />
           
+          {/* SEND BUTTON */}
           <button 
             className="btn" 
             onClick={handleSend} 
             disabled={sending || !composeText.trim()}
-            style={{ backgroundColor: '#10b981', padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            style={{ backgroundColor: '#10b981', padding: '12px', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' }}
             title="Send Email"
           >
-            {sending ? "⏳" : "🚀"}
+            {sending ? <Hourglass size={20} /> : <Send size={20} style={{ marginLeft: '2px' }} />} 
           </button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { MessageSquare, PlusCircle, BarChart2, LogOut, Trash2, MessageCircleDashedIcon } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import LeadForm from './components/LeadForm';
 import ProspectDetail from './components/ProspectDetail';
@@ -100,10 +101,10 @@ function App() {
 
         <div className="sidebar-menu" style={{ flex: 1, overflowY: 'auto' }}>
           <div className={`sidebar-item ${currentView === 'dashboard' ? 'active' : ''}`} onClick={() => setCurrentView('dashboard')}>
-            📊 Analytics Dashboard
+            <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}><BarChart2 size={18} /> Analytics Dashboard</div>
           </div>
           <div className={`sidebar-item ${currentView === 'add_lead' ? 'active' : ''}`} onClick={() => setCurrentView('add_lead')}>
-            ➕ Add New Lead
+            <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}><PlusCircle size={18} /> Add New Lead</div>
           </div>
 
           <p style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 'bold', margin: '16px 0 4px 10px', textTransform: 'uppercase' }}>
@@ -116,7 +117,7 @@ function App() {
                 <strong>{prospect.first_name} {prospect.last_name}</strong>
                 <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{prospect.company_name}</div>
               </div>
-              <button className="delete-btn" onClick={(e) => initiateDelete(e, prospect.id)} title="Delete Prospect">🗑️</button>
+              <button className="delete-btn" onClick={(e) => initiateDelete(e, prospect.id)} title="Delete Prospect"><Trash2 size={18} color="#ef4444" /></button>
             </div>
           ))}
         </div>
@@ -198,7 +199,7 @@ function App() {
                     }} 
                     title="Delete Prospect"
                   >
-                    🗑️
+                    <Trash2 size={18} color="#ef4444" />
                   </button>
 
                 </div>
@@ -261,7 +262,8 @@ function App() {
           className={`nav-item ${(currentView !== 'dashboard' && currentView !== 'add_lead') ? 'active' : ''}`} 
           onClick={() => setCurrentView('chat_list')}
         >
-          <span className="nav-icon">💬</span>
+          
+          <MessageCircleDashedIcon size={24} />
           <span>Chats</span>
         </div>
         
@@ -269,7 +271,7 @@ function App() {
           className={`nav-item ${currentView === 'add_lead' ? 'active' : ''}`} 
           onClick={() => setCurrentView('add_lead')}
         >
-          <span className="nav-icon">➕</span>
+          <PlusCircle size={24} />
           <span>Add Lead</span>
         </div>
 
@@ -277,14 +279,14 @@ function App() {
           className={`nav-item ${currentView === 'dashboard' ? 'active' : ''}`} 
           onClick={() => setCurrentView('dashboard')}
         >
-          <span className="nav-icon">📊</span>
+          <BarChart2 size={24} />
           <span>Stats</span>
         </div>
         <div 
           className="nav-item" 
           onClick={() => setShowLogoutModal(true)}
         >
-          <span className="nav-icon">🚪</span>
+          <LogOut size={24} />
           <span>Logout</span>
         </div>
 
