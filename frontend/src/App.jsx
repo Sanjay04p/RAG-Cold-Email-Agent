@@ -23,6 +23,8 @@ function App() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [currentView, setCurrentView] = useState('dashboard');
   const [prospectToDelete, setProspectToDelete] = useState(null); 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
 
   // Check login status on page load
   useEffect(() => {
@@ -172,7 +174,21 @@ function App() {
                     <div className="chat-name">{prospect.first_name} {prospect.last_name}</div>
                     <div className="chat-company">{prospect.company_name}</div>
                   </div>
+
+                <button 
+                    className="delete-btn mobile-delete-btn" 
+                    onClick={(e) => {
+                      e.stopPropagation(); // Crucial: Stops the row from opening the chat when you tap delete!
+                      initiateDelete(e, prospect.id);
+                    }} 
+                    title="Delete Prospect"
+                  >
+                    🗑️
+                  </button>
+
                 </div>
+
+                
               ))
             )}
           </div>
@@ -200,6 +216,30 @@ function App() {
         </div>
       )}
       
+
+      {/* LOGOUT MODAL */}
+      {showLogoutModal && (
+        <div className="modal-overlay" onClick={() => setShowLogoutModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3 className="modal-title">Confirm Logout</h3>
+            <p className="modal-text">Are you sure you want to log out of your session?</p>
+            <div className="modal-actions">
+              <button className="btn-text" onClick={() => setShowLogoutModal(false)}>Cancel</button>
+              <button 
+                className="btn-danger" 
+                onClick={() => {
+                  setShowLogoutModal(false);
+                  handleLogout(); // This calls your existing logout logic!
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       {/* NEW: MOBILE BOTTOM NAV (Fixed State Logic) */}
       <div className="mobile-bottom-nav">
         <div 
@@ -225,7 +265,15 @@ function App() {
           <span className="nav-icon">📊</span>
           <span>Stats</span>
         </div>
+        <div 
+          className="nav-item" 
+          onClick={() => setShowLogoutModal(true)}
+        >
+          <span className="nav-icon">🚪</span>
+          <span>Logout</span>
+        </div>
       </div>
+
 
     </div> 
   );

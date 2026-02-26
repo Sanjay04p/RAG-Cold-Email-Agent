@@ -363,7 +363,7 @@ body {
     text-decoration: none;
     font-size: 12px;
     gap: 4px;
-    width: 33%;
+    width: 25%;
   }
 
   .nav-item.active {
@@ -446,6 +446,21 @@ body {
     border-radius: 24px !important; 
     min-width: 0 !important; 
   }
+
+
+  .chat-list-item .mobile-delete-btn {
+    opacity: 1 !important;
+    padding: 12px !important; /* Larger touch target for thumbs */
+    font-size: 18px !important;
+    margin-left: auto !important; /* Pushes the trash can to the far right edge */
+    background-color: transparent !important;
+  }
+  
+  .chat-list-item .mobile-delete-btn:active {
+    background-color: #fee2e2 !important;
+    border-radius: 50% !important;
+  }
+
 
 
 }
