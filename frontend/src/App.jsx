@@ -147,6 +147,22 @@ function App() {
         </div>
       </div>
 
+
+          <div className="mobile-top-header">
+        <div style={{ fontWeight: 'bold', fontSize: '18px', color: 'var(--primary)' }}>
+          AutoPitch AI
+        </div>
+        <a 
+          href="https://sanjay04p.netlify.app/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{ fontSize: '12px', fontWeight: '500', color: '#64748b', textDecoration: 'none', backgroundColor: '#f1f5f9', padding: '4px 10px', borderRadius: '12px' }}
+        >
+          by Sanjay P.
+        </a>
+      </div>
+
+
       {/* RIGHT WORKSPACE */}
       <div className="main-workspace">
         {currentView === 'dashboard' && <Dashboard key={refreshTrigger} />}
@@ -154,7 +170,6 @@ function App() {
         {currentView === 'chat_list' && (
           <div className="chat-list-container">
             <div className="chat-list-header">Chats</div>
-            
             {prospects.length === 0 ? (
               <div style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
                 No prospects yet. Tap 'Add Lead' to start!
@@ -272,6 +287,9 @@ function App() {
           <span className="nav-icon">🚪</span>
           <span>Logout</span>
         </div>
+
+
+        
       </div>
 
 

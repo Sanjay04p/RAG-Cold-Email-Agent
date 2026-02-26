@@ -319,6 +319,12 @@ body {
     width: 100% !important;
     margin-top: 10px !important;
   }
+
+  .mobile-top-header {
+  display: none;
+}
+
+
 /* --- MOBILE RESPONSIVE LAYOUT --- */
 @media screen and (max-width: 768px) {
   .app-layout {
@@ -331,10 +337,26 @@ body {
     display: none !important;
   }
 
+
+  .mobile-top-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    height: 55px !important;
+    padding: 0 20px !important;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+    z-index: 1000 !important;
+  }
+
+
   .main-workspace {
     width: 100% !important;
     padding: 0 !important; 
-    height: calc(100dvh - 65px) !important; 
+    height: calc(100dvh - 65px - 55px) !important; 
     overflow-y: auto !important;
     padding-bottom: 20px !important;
   }
