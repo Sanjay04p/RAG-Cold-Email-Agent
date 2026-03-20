@@ -22,11 +22,6 @@ Built with **FastAPI**, **React**, and **Google Gemini**, ColdReach AI slashes t
 
 **The Solution:** Instead of relying on expensive third-party APIs or premium server tiers, I re-architected the delivery flow to use **URL Web Intents**. The FastAPI backend generates the personalized payload and sends it to the React frontend, which constructs an encoded Gmail compose URL. This offloads the actual sending action to the user's local, authenticated browser, guaranteeing 100% deliverability with zero infrastructure cost.
 
-
-
-## Live Demo
-https://github.com/user-attachments/assets/fb6b1c87-6d69-40cc-a4fb-de3d9c96417a
-
 ## 🏗️ System Architecture
 
 This pipeline automates hyper-personalized outreach by combining live web scraping with Retrieval-Augmented Generation (RAG).
@@ -37,6 +32,11 @@ This pipeline automates hyper-personalized outreach by combining live web scrapi
 * **Product Knowledge DB:** Stores the user's own product details, case studies, and value propositions in a `Pinecone` vector database.
 * **Prompt Orchestration:** `LangChain` dynamically merges the scraped prospect data with retrieved product knowledge.
 * **AI Generation:** Feeds the augmented context into the LLM to generate highly targeted, non-generic cold emails at scale.
+
+## Live Demo
+https://github.com/user-attachments/assets/fb6b1c87-6d69-40cc-a4fb-de3d9c96417a
+
+
 
 
 
