@@ -27,6 +27,7 @@ Built with **FastAPI**, **React**, and **Google Gemini**, ColdReach AI slashes t
 ## Live Demo
 https://github.com/user-attachments/assets/fb6b1c87-6d69-40cc-a4fb-de3d9c96417a
 
+<img width="1895" height="562" alt="image" src="https://github.com/user-attachments/assets/a9291bf0-2680-4d8c-9780-ffc6e8a1047d" />
 
 
 ## ⚙️ Local Setup & Installation
