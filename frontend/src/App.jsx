@@ -128,7 +128,7 @@ function App() {
 
           <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '15px' }}>
             Built by <a 
-              href="https://sanjay04p.netlify.app/" 
+              href="https://sanjaysp.in" 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '600' }}
@@ -154,7 +154,7 @@ function App() {
           AutoPitch AI
         </div>
         <a 
-          href="https://sanjay04p.netlify.app/" 
+          href="https://sanjaysp.in" 
           target="_blank" 
           rel="noopener noreferrer"
           style={{ fontSize: '12px', fontWeight: '500', color: '#64748b', textDecoration: 'none', backgroundColor: '#f1f5f9', padding: '4px 10px', borderRadius: '12px' }}
