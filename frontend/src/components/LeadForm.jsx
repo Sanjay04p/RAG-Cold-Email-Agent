@@ -4,7 +4,12 @@ import axios from 'axios';
 
 export default function LeadForm({ onLeadAdded }) {
   const [formData, setFormData] = useState({
-    first_name: '', last_name: '', email: '', company_name: '', company_website: ''
+    first_name: '',
+    last_name: '',
+    email: '',
+    company_name: '',
+    company_website: '',
+    linkedin_url: '' // Add this line!
   });
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +28,15 @@ export default function LeadForm({ onLeadAdded }) {
       onLeadAdded(response.data); 
       
       // Clear the form
-      setFormData({ first_name: '', last_name: '', email: '', company_name: '', company_website: ''});
+      
+      setFormData({
+        first_name: '',
+        last_name: '',
+        email: '',
+        company_name: '',
+        company_website: '',
+        linkedin_url: '' 
+      });
     } catch (error) {
       alert("Error saving lead. Check console.");
       console.error(error);
@@ -56,6 +69,11 @@ export default function LeadForm({ onLeadAdded }) {
         <div className="form-group form-full-width">
           <label>Company Website (Required for AI Scraping)</label>
           <input name="company_website" type="url" placeholder="https://example.com" value={formData.company_website} onChange={handleChange} required />
+        </div>
+        
+        <div className="form-group form-full-width">
+          <label>LinkedIn Profile URL (Optional)</label>
+          <input name="linkedin_url" type="url" placeholder="https://linkedin.com/in/johndoe" value={formData.linkedin_url} onChange={handleChange} />
         </div>
 
         <div className="form-full-width" style={{ marginTop: '10px' }}>
