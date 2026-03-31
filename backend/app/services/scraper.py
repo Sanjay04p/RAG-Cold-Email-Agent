@@ -2,6 +2,7 @@ import requests
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 from playwright_stealth import stealth_sync
+import urllib.parse
 
 class ScraperService:
     def scrape_website(self, url: str) -> str:
@@ -62,5 +63,26 @@ class ScraperService:
             return clean_text[:2000]
             
         return ""
+    
+
+    async def get_linkedin_snippet(name: str, company: str, page) -> str:
+        """Scrapes the Google search snippet for a prospect's LinkedIn profile."""
+        # Format the strict search query
+        query = f'site:linkedin.com/in/ "{name}" "{company}"'
+        url = f"https://www.google.com/search?q={urllib.parse.quote(query)}"
+        
+        await page.goto(url)
+        
+        try:
+            # Target the first organic search result block
+            first_result = await page.query_selector("#search .g")
+            if first_result:
+                snippet = await first_result.inner_text()
+                # Clean up the text to save LLM tokens
+                return snippet.replace("\n", " ").strip()
+        except Exception as e:
+            print(f"Snippet extraction failed: {e}")
+            
+        return "No LinkedIn data found."
 
 scraper = ScraperService()
