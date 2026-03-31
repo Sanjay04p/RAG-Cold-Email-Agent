@@ -6,6 +6,7 @@ import LeadForm from './components/LeadForm';
 import ProspectDetail from './components/ProspectDetail';
 import AuthPage from './components/AuthPage';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
 axios.defaults.baseURL = API_BASE_URL;
 
 axios.interceptors.request.use((config) => {
