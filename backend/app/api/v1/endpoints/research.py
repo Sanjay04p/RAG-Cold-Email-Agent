@@ -10,6 +10,7 @@ from app.models import models
 from pydantic import BaseModel
 from app.core.security import get_current_user
 from app.models.models import User
+import urllib.parse
 class EmailSendRequest(BaseModel):
     subject: str
     edited_body: str
@@ -30,37 +31,52 @@ def generate_email_line(prospect_id: int, db: Session = Depends(get_db)):
     if not url.startswith("http"):
         url = "https://" + url
 
-    # 2. Scrape Context
+    # 2. Scrape Company Context
     print(f"Scraping {url}...")
     scraped_data = scraper.scrape_website(url)
-    
     if not scraped_data:
         raise HTTPException(status_code=500, detail="Failed to scrape website.")
 
-    # 3. RAG INGESTION: Store the data in Pinecone
+    # 3. Scrape LinkedIn Context via Google Dorking (NEW)
+    print("Fetching LinkedIn context via Google...")
+    query = f'site:linkedin.com/in/ "{prospect.first_name} {prospect.last_name}" "{prospect.company_name}"'
+    google_search_url = f"https://www.google.com/search?q={urllib.parse.quote(query)}"
+    
+    # Reusing your existing scraper setup to grab the Google text
+    linkedin_raw_data = scraper.scrape_website(google_search_url) 
+    if linkedin_raw_data and "No LinkedIn data found" not in linkedin_raw_data and "Google" not in linkedin_raw_data[:50]:
+        linkedin_context = linkedin_raw_data[:500]
+    else:
+        linkedin_context = "No specific personal background found. Focus entirely on the company context."
+    
+
+    # 4. RAG INGESTION
     vector_db.store_company_data(
         prospect_id=prospect.id, 
         company_name=prospect.company_name, 
         scraped_text=scraped_data
     )
 
-    # 4. RAG RETRIEVAL: Ask Pinecone for the best email hook
+    # 5. RAG RETRIEVAL
     search_query = "What is a recent company news, product launch, or key achievement?"
-    
-    
     retrieved_context = vector_db.search_company_data(
         query=search_query,
         company_name=prospect.company_name 
     )
 
+    # 6. AI Generation (Combined Contexts)
     print("Generating personalized line with AI...")
+    
+    # Combine everything for Gemini
+    combined_prompt_context = f"Company Context: {retrieved_context or scraped_data}\n\nLinkedIn Context: {linkedin_context}"
+
     personalized_line = llm.generate_opening_line(
         prospect_name=prospect.first_name,
         company_name=prospect.company_name,
-        scraped_context=retrieved_context or scraped_data 
+        scraped_context=combined_prompt_context 
     )
 
-    # 5. Save to Database
+    # 7. Save to Database
     saved_email = crud.create_email_log(
         db=db, 
         prospect_id=prospect.id, 
