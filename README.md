@@ -28,14 +28,14 @@ This pipeline automates hyper-personalized outreach by combining live web scrapi
 
 <img width="1895" height="562" alt="image" src="https://github.com/user-attachments/assets/a9291bf0-2680-4d8c-9780-ffc6e8a1047d" />
 
-* **Lead Context Engine:** Uses `BeautifulSoup` and `Playwright` to scrape prospect websites or profiles in real-time to extract pain points and company context.
+* **Lead Context Engine:** Uses `BeautifulSoup` and `Playwright` to scrape prospect websites or Linkedin profiles in real-time to extract pain points and company context.
 * **Product Knowledge DB:** Stores the user's own product details, case studies, and value propositions in a `Pinecone` vector database.
 * **Prompt Orchestration:** `LangChain` dynamically merges the scraped prospect data with retrieved product knowledge.
 * **AI Generation:** Feeds the augmented context into the LLM to generate highly targeted, non-generic cold emails at scale.
 
 ## Live Demo
-https://github.com/user-attachments/assets/fb6b1c87-6d69-40cc-a4fb-de3d9c96417a
 
+https://github.com/user-attachments/assets/606ef4c6-5d11-42f4-8591-e46349c8871d
 
 
 
