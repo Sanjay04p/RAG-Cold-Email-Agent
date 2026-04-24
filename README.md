@@ -40,9 +40,3 @@ https://github.com/user-attachments/assets/606ef4c6-5d11-42f4-8591-e46349c8871d
 
 
 
-## ⚙️ Local Setup & Installation
-
-### Clone the Repository
-```bash
-git clone https://github.com/Sanjay04p/RAG-Cold-Email-Agent.git
-cd RAG-Cold-Email-Agent
