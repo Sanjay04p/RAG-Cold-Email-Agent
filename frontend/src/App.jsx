@@ -134,7 +134,7 @@ function App() {
               rel="noopener noreferrer"
               style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '600' }}
             >
-              Sanjay Pattanashetti
+              Sanjay P.
             </a>
           </div>
 
