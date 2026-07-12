@@ -1,105 +1,74 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { Eye, EyeOff, ArrowRight, ArrowLeft, Flame } from 'lucide-react';
 
-export default function AuthPage({ onLoginSuccess }) {
-  // Toggles between 'login' and 'signup' modes
-  const [isLogin, setIsLogin] = useState(true); 
-  
+export default function AuthPage({ onLoginSuccess, onBack }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      if (isLogin) {
-        // --- LOGIN FLOW ---
-        // FastAPI's OAuth2 specifically requires data to be sent as form-urlencoded, not standard JSON
-        const formData = new URLSearchParams();
-        formData.append('username', email); // OAuth2 expects the key to be 'username'
-        formData.append('password', password);
-
-        const response = await axios.post('/api/v1/auth/login', formData, {
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        });
-
-        // Save the encrypted passkey to the browser's local storage!
-        localStorage.setItem('token', response.data.access_token);
-        
-        // Tell the main App that we are officially logged in
-        onLoginSuccess(); 
-
-      } else {
-        // --- SIGNUP FLOW ---
-        // Signup uses standard JSON
-        await axios.post('/api/v1/auth/signup', { 
-          email: email, 
-          password: password 
-        });
-        
-        alert("Account created successfully! Please log in.");
-        setIsLogin(true); // Switch the UI back to the login screen
-        setPassword('');  // Clear the password field for security
-      }
-    } catch (error) {
-      // Show the specific error message from our FastAPI backend (e.g., "Email already registered")
-      alert(error.response?.data?.detail || "Authentication failed. Please try again.");
-    }
-    
-    setLoading(false);
+    setError('');
+    // Simulate login for now
+    onLoginSuccess();
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: 'var(--bg-color)' }}>
-      <div className="card" style={{ width: '400px', padding: '40px' }}>
-        
-        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <h1 style={{ color: 'var(--primary)', margin: '0 0 8px 0' }}>AutoPitch AI</h1>
-          <p style={{ color: 'var(--text-muted)', margin: 0 }}>
-            {isLogin ? "Welcome back. Log in to your workspace." : "Create your account to get started."}
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div className="form-group">
-            <label>Email Address</label>
-            <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              required 
-              placeholder="you@example.com"
-            />
-          </div>
+    <div className="auth-container">
+      {/* LEFT COLUMN: Login Form */}
+      <div className="auth-form-section">
+        <div className="auth-form-wrapper animate-slide-up">
           
-          <div className="form-group">
-            <label>Password</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
-              placeholder="••••••••"
-            />
+          <button onClick={onBack} style={{ background: 'none', border: 'none', color: '#6b7280', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', marginBottom: '32px', fontSize: '14px', fontWeight: '500', padding: 0 }}>
+            <ArrowLeft size={16} /> Back to home
+          </button>
+
+          {/* NEW LOGO ELEMENT */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+            <div className="logo-icon-wrapper">
+              <Flame size={24} color="white" />
+            </div>
+            <span style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a' }}>ColdReach</span>
           </div>
 
-          <button type="submit" className="btn" style={{ marginTop: '10px', padding: '12px' }} disabled={loading}>
-            {loading ? "Processing..." : (isLogin ? "Log In" : "Sign Up")}
-          </button>
-        </form>
+          <h1 className="auth-title delay-1">Welcome back</h1>
+          <p className="auth-subtitle delay-1">Sign in to access your portal and tools</p>
 
-        <div style={{ textAlign: 'center', marginTop: '24px', fontSize: '14px', color: 'var(--text-muted)' }}>
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
-          <button 
-            onClick={() => setIsLogin(!isLogin)} 
-            style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 'bold', cursor: 'pointer', padding: 0 }}
-          >
-            {isLogin ? "Sign Up" : "Log In"}
-          </button>
+          <form onSubmit={handleSubmit} className="auth-form delay-2 animate-slide-up">
+            <div className="input-group">
+              <label>Email address</label>
+              <input type="email" placeholder="you@company.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+
+            <div className="input-group">
+              <label>Password</label>
+              <div className="password-wrapper">
+                <input type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="form-actions">
+              <label className="checkbox-label"><input type="checkbox" /> Keep me signed in</label>
+              {/* <a href="#" className="forgot-password">Forgot password?</a> */}
+            </div>
+
+            <button type="submit" className="submit-btn">
+              Sign in <ArrowRight size={18} />
+            </button>
+          </form>
         </div>
-        
+      </div>
+
+      {/* RIGHT COLUMN GRAPHIC (Now Animated) */}
+      <div className="auth-graphic-section">
+        <div className="graphic-card animate-float animate-glow">
+          <h2>Your AI-powered<br/>tool stack starts here</h2>
+          <p>Connect your tools, unify your data, and<br/>deploy AI agents in weeks.</p>
+        </div>
       </div>
     </div>
   );
