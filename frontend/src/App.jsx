@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import LeadForm from './components/LeadForm';
 import ProspectDetail from './components/ProspectDetail';
 import AuthPage from './components/AuthPage';
+import LandingPage from './components/LandingPage';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 axios.defaults.baseURL = API_BASE_URL;
@@ -21,11 +22,32 @@ axios.interceptors.request.use((config) => {
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthScreen, setShowAuthScreen] = useState(false);
   const [prospects, setProspects] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [currentView, setCurrentView] = useState('dashboard');
   const [prospectToDelete, setProspectToDelete] = useState(null); 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // --- BROWSER NAVIGATION LOGIC ---
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#login') {
+        setShowAuthScreen(true);
+      } else {
+        setShowAuthScreen(false);
+      }
+    };
+
+    // 1. Check the URL when the page first loads
+    handleHashChange();
+
+    // 2. Listen for the user clicking the Browser Back/Forward buttons
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // 3. Cleanup listener on unmount
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
 
   // Check login status on page load
@@ -84,8 +106,28 @@ function App() {
   };
 
   // --- RENDER ---
+  // --- RENDER ---
+  // --- RENDER ---
   if (!isAuthenticated) {
-    return <AuthPage onLoginSuccess={() => setIsAuthenticated(true)} />;
+    if (showAuthScreen) {
+      return (
+        <AuthPage 
+          onLoginSuccess={() => setIsAuthenticated(true)} 
+          onBack={() => {
+            // This acts exactly like clicking the browser's back button
+            window.history.back(); 
+          }} 
+        />
+      );
+    }
+    return (
+      <LandingPage 
+        onNavigateToLogin={() => {
+          // This updates the URL to /#login, triggering the event listener
+          window.location.hash = 'login'; 
+        }} 
+      />
+    );
   }
 
   const selectedProspect = prospects.find(p => p.id === currentView);
