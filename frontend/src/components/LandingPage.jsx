@@ -11,7 +11,11 @@ export default function LandingPage({ onNavigateToLogin }) {
             <Flame size={18} color="white" />
           </div>
           <span style={{ fontSize: '20px', fontWeight: '800' }}>AutoPitch AI</span>
+          <span style={{ fontSize: '11px', backgroundColor: '#ffedd5', color: '#c2410c', padding: '2px 8px', borderRadius: '12px', fontWeight: '700', letterSpacing: '0.5px' }}>
+                BETA
+              </span>
         </div>
+
         <div className="landing-nav-links">
           <button className="nav-login-btn" onClick={onNavigateToLogin}>Sign In</button>
           <button className="nav-cta-btn" onClick={onNavigateToLogin}>Get Started</button>
