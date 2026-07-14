@@ -5,20 +5,54 @@ export default function LandingPage({ onNavigateToLogin }) {
     <div className="landing-container">
       
       {/* NAVBAR */}
-      <nav className="landing-nav animate-slide-up">
-        <div className="landing-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div className="logo-icon-wrapper" style={{ width: '32px', height: '32px', borderRadius: '8px' }}>
+      {/* NAVBAR */}
+      <nav className="landing-nav animate-slide-up" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap' }}>
+        
+        {/* LEFT SIDE: Logo & Title */}
+        <div className="landing-logo" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 1, minWidth: 0 }}>
+          <div className="logo-icon-wrapper" style={{ width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0 }}>
             <Flame size={18} color="white" />
           </div>
-          <span style={{ fontSize: '20px', fontWeight: '800' }}>AutoPitch AI</span>
-          <span style={{ fontSize: '11px', backgroundColor: '#ffedd5', color: '#c2410c', padding: '2px 8px', borderRadius: '12px', fontWeight: '700', letterSpacing: '0.5px' }}>
-                BETA
-              </span>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
+            <span style={{ 
+              fontSize: 'clamp(15px, 4vw, 20px)', /* Scales down slightly on very small phones */
+              fontWeight: '800', 
+              whiteSpace: 'nowrap' 
+            }}>
+              AutoPitch AI
+            </span>
+            <span style={{ 
+              fontSize: '10px', 
+              backgroundColor: '#ffedd5', 
+              color: '#c2410c', 
+              padding: '2px 6px', 
+              borderRadius: '12px', 
+              fontWeight: '700', 
+              letterSpacing: '0.5px',
+              flexShrink: 0
+            }}>
+              BETA
+            </span>
+          </div>
         </div>
 
-        <div className="landing-nav-links">
-          <button className="nav-login-btn" onClick={onNavigateToLogin}>Sign In</button>
-          <button className="nav-cta-btn" onClick={onNavigateToLogin}>Get Started</button>
+        {/* RIGHT SIDE: Buttons */}
+        <div className="landing-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          <button 
+            className="nav-login-btn" 
+            onClick={onNavigateToLogin}
+            style={{ whiteSpace: 'nowrap', padding: '8px 12px' }}
+          >
+            Sign In
+          </button>
+          <button 
+            className="nav-cta-btn" 
+            onClick={onNavigateToLogin}
+            style={{ whiteSpace: 'nowrap', padding: '8px 12px' }}
+          >
+            Get Started
+          </button>
         </div>
       </nav>
 
