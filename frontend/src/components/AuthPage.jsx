@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Eye, EyeOff, ArrowRight, ArrowLeft, Flame, UserPlus } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, ArrowLeft, Flame, UserPlus, AlertTriangle } from 'lucide-react';
 
 export default function AuthPage({ onLoginSuccess, onBack }) {
   // Toggle between Login and Signup modes
@@ -65,11 +65,18 @@ export default function AuthPage({ onLoginSuccess, onBack }) {
           </button>
 
           {/* LOGO ELEMENT */}
+          {/* LOGO ELEMENT */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
             <div className="logo-icon-wrapper">
               <Flame size={24} color="white" />
             </div>
-            <span style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a' }}>ColdReach AI</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a' }}>AutoPitch AI</span>
+              {/* NEW BETA TAG */}
+              <span style={{ fontSize: '11px', backgroundColor: '#ffedd5', color: '#c2410c', padding: '2px 8px', borderRadius: '12px', fontWeight: '700', letterSpacing: '0.5px' }}>
+                BETA
+              </span>
+            </div>
           </div>
 
           <h1 className="auth-title delay-1">
@@ -103,7 +110,7 @@ export default function AuthPage({ onLoginSuccess, onBack }) {
               <div className="password-wrapper">
                 <input 
                   type={showPassword ? "text" : "password"} 
-                  placeholder={isLogin ? "Enter your password" : "Create a secure password"} 
+                  placeholder={isLogin ? "Enter your password" : "Create a password"} 
                   value={password} 
                   onChange={(e) => setPassword(e.target.value)} 
                   required 
@@ -125,7 +132,7 @@ export default function AuthPage({ onLoginSuccess, onBack }) {
                 <label className="checkbox-label">
                   <input type="checkbox" disabled={loading} /> Keep me signed in
                 </label>
-                <a href="#" className="forgot-password">Forgot password?</a>
+                {/* <a href="#" className="forgot-password">Forgot password?</a>/ */}
               </div>
             )}
 
@@ -134,6 +141,16 @@ export default function AuthPage({ onLoginSuccess, onBack }) {
               {!loading && (isLogin ? <ArrowRight size={18} /> : <UserPlus size={18} />)}
             </button>
           </form>
+
+            {/* NEW WARNING MESSAGE (Only shows on Signup) */}
+          {!isLogin && (
+            <div className="delay-2 animate-slide-up" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginTop: '16px', padding: '12px', backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px', color: '#b45309', fontSize: '13px', lineHeight: '1.5' }}>
+              <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: '1px' }} />
+              <div>
+                <strong>Heads up!</strong> Please store your password safely. The automated password reset feature is currently under active development.
+              </div>
+            </div>
+          )}
 
           {/* TOGGLE LOGIN / SIGNUP */}
           <div className="divider delay-3 animate-slide-up" style={{ marginTop: '24px' }}>
