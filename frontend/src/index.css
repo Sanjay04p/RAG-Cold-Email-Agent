@@ -545,6 +545,7 @@ body {
 .auth-form input[type="password"],
 .auth-form input[type="text"] {
   width: 100%;
+  box-sizing: border-box;
   padding: 12px 14px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
@@ -559,6 +560,12 @@ body {
 
 .password-wrapper {
   position: relative;
+  width: 100%;
+  display: block;
+}
+
+.password-wrapper input {
+  padding-right: 40px !important;
 }
 
 .toggle-password {
