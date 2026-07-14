@@ -138,8 +138,25 @@ function App() {
       {/* LEFT SIDEBAR (Hidden on Mobile via CSS) */}
       <div className="sidebar">
         <div className="sidebar-header">
-          <h2 style={{ color: 'var(--primary)', margin: '0' }}>AutoPitch AI</h2>
-          <p style={{ color: 'var(--text-muted)', margin: '4px 0 0 0', fontSize: '12px' }}>SDR Agent Workspace</p>
+  {/* Flex wrapper to keep the title and badge perfectly aligned on the same line */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h2 style={{ color: 'var(--primary)', margin: '0' }}>AutoPitch AI</h2>
+            <span style={{ 
+              fontSize: '11px', 
+              backgroundColor: '#ffedd5', 
+              color: '#c2410c', 
+              padding: '2px 8px', 
+              borderRadius: '12px', 
+              fontWeight: '700', 
+              letterSpacing: '0.5px' 
+            }}>
+              BETA
+            </span>
+          </div>
+          
+          <p style={{ color: 'var(--text-muted)', margin: '4px 0 0 0', fontSize: '12px' }}>
+            SDR Agent Workspace
+          </p>
         </div>
 
         <div className="sidebar-menu" style={{ flex: 1, overflowY: 'auto' }}>
@@ -193,9 +210,27 @@ function App() {
 
 
           <div className="mobile-top-header">
-        <div style={{ fontWeight: 'bold', fontSize: '18px', color: 'var(--primary)' }}>
-          AutoPitch AI
-        </div>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px', /* Adds perfect spacing between the text and badge */
+              fontWeight: 'bold', 
+              fontSize: '18px', 
+              color: 'var(--primary)' 
+            }}>
+              AutoPitch AI 
+              <span style={{ 
+                fontSize: '11px', 
+                backgroundColor: '#ffedd5', 
+                color: '#c2410c', 
+                padding: '2px 8px', 
+                borderRadius: '12px', 
+                fontWeight: '700', 
+                letterSpacing: '0.5px' 
+              }}>
+                BETA
+              </span>
+            </div>
         <a 
           href="https://sanjayp.dev" 
           target="_blank" 
