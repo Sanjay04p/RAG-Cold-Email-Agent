@@ -948,3 +948,24 @@ body {
   justify-content: center;
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
+
+@keyframes fillProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--primary); /* Uses your existing blue or orange theme color */
+  border-radius: 8px;
+  animation: fillProgress 50s cubic-bezier(0.1, 0.7, 0.1, 1) forwards;
+}
+
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
